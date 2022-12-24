@@ -400,7 +400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:latest":
+"@types/node-fetch@latest":
   version: 2.6.2
   resolution: "@types/node-fetch@npm:2.6.2"
   dependencies:
