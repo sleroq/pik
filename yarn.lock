@@ -17,7 +17,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@builder.io/qwik@npm:0.16.1":
+"@builder.io/qwik@npm:^0.16.1":
   version: 0.16.1
   resolution: "@builder.io/qwik@npm:0.16.1"
   dependencies:
@@ -1209,7 +1209,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.4.0":
+"espree@npm:^9.4.0, espree@npm:^9.4.1":
   version: 9.4.1
   resolution: "espree@npm:9.4.1"
   dependencies:
@@ -2904,7 +2904,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "pik@workspace:."
   dependencies:
-    "@builder.io/qwik": 0.16.1
+    "@builder.io/qwik": ^0.16.1
     "@builder.io/qwik-city": 0.0.128
     "@types/eslint": 8.4.10
     "@types/node": ^18.11.16
@@ -2913,6 +2913,7 @@ __metadata:
     "@typescript-eslint/parser": 5.46.1
     eslint: 8.30.0
     eslint-plugin-qwik: 0.16.1
+    espree: ^9.4.1
     node-fetch: 3.3.0
     prettier: 2.8.1
     typescript: 4.9.4
