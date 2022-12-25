@@ -35,13 +35,7 @@ export default component$(() => {
   const state = useStore<SharedState>({})
 
   useClientEffect$(() => {
-    // TODO: Figure out how to get this
-    const widgetId =
-      '!kzgAp0oSUS85E6NS%3Asleroq.link_%40sleroq%3Asleroq.link_1671992491687'
-    console.log('widget id: ', widgetId)
-
-    // TODO: Figure out how to get this
-    const api = new WidgetApi(widgetId, 'https://develop.element.io')
+    const api = new WidgetApi()
     api.requestCapability(MatrixCapabilities.StickerSending)
 
     api.on('ready', async function () {
