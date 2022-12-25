@@ -361,6 +361,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/events@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/events@npm:3.0.0"
+  checksum: 9a424c2da210957d5636e0763e8c9fc3aaeee35bf411284ddec62a56a6abe31de9c7c2e713dabdd8a76ff98b47db2bd52f61310be6609641d6234cc842ecbbe3
+  languageName: node
+  linkType: hard
+
 "@types/hast@npm:^2.0.0":
   version: 2.3.4
   resolution: "@types/hast@npm:2.3.4"
@@ -1314,6 +1321,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"events@npm:^3.2.0":
+  version: 3.3.0
+  resolution: "events@npm:3.3.0"
+  checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
+  languageName: node
+  linkType: hard
+
 "extend@npm:^3.0.0":
   version: 3.0.2
   resolution: "extend@npm:3.0.2"
@@ -2021,6 +2035,16 @@ __metadata:
   version: 1.1.1
   resolution: "markdown-extensions@npm:1.1.1"
   checksum: 8a6dd128be1c524049ea6a41a9193715c2835d3d706af4b8b714ff2043a82786dbcd4a8f1fa9ddd28facbc444426c97515aef2d1f3dd11d5e2d63749ba577b1e
+  languageName: node
+  linkType: hard
+
+"matrix-widget-api@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "matrix-widget-api@npm:1.1.1"
+  dependencies:
+    "@types/events": ^3.0.0
+    events: ^3.2.0
+  checksum: ae88999b7247542ad4ee433d9b148d9856f633ee690b2854deb341b843180ebe5a0dff599f1775fcaa696fd2de472cebb2cb1556983d145208ebd8198c4b654a
   languageName: node
   linkType: hard
 
@@ -2914,6 +2938,7 @@ __metadata:
     eslint: 8.30.0
     eslint-plugin-qwik: 0.16.1
     espree: ^9.4.1
+    matrix-widget-api: ^1.1.1
     node-fetch: 3.3.0
     prettier: 2.8.1
     typescript: 4.9.4

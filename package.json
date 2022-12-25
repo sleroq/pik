@@ -36,5 +36,8 @@
     "undici": "5.14.0",
     "vite": "4.0.1",
     "vite-tsconfig-paths": "3.5.0"
+  },
+  "dependencies": {
+    "matrix-widget-api": "^1.1.1"
   }
 }

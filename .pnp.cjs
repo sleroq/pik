@@ -38,6 +38,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint", "npm:8.30.0"],\
             ["eslint-plugin-qwik", "virtual:b167ce6c64c53b452480325d5f3df819fa42e5a97460fa73067588d69450a40cfa246c03556be243d1e82e59207b47b63aa624ec67ef71f636f794e39606be37#npm:0.16.1"],\
             ["espree", "npm:9.4.1"],\
+            ["matrix-widget-api", "npm:1.1.1"],\
             ["node-fetch", "npm:3.3.0"],\
             ["prettier", "npm:2.8.1"],\
             ["typescript", "patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=ad5954"],\
@@ -469,6 +470,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@types/estree-jsx", "npm:1.0.0"],\
             ["@types/estree", "npm:1.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/events", [\
+        ["npm:3.0.0", {\
+          "packageLocation": "./.yarn/cache/@types-events-npm-3.0.0-2eee0ea973-9a424c2da2.zip/node_modules/@types/events/",\
+          "packageDependencies": [\
+            ["@types/events", "npm:3.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1646,6 +1656,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["events", [\
+        ["npm:3.3.0", {\
+          "packageLocation": "./.yarn/cache/events-npm-3.3.0-c280bc7e48-f6f487ad21.zip/node_modules/events/",\
+          "packageDependencies": [\
+            ["events", "npm:3.3.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["extend", [\
         ["npm:3.0.2", {\
           "packageLocation": "./.yarn/cache/extend-npm-3.0.2-e1ca07ac54-a50a8309ca.zip/node_modules/extend/",\
@@ -2452,6 +2471,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/markdown-extensions-npm-1.1.1-633329e3d0-8a6dd128be.zip/node_modules/markdown-extensions/",\
           "packageDependencies": [\
             ["markdown-extensions", "npm:1.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["matrix-widget-api", [\
+        ["npm:1.1.1", {\
+          "packageLocation": "./.yarn/cache/matrix-widget-api-npm-1.1.1-bd84a79f76-ae88999b72.zip/node_modules/matrix-widget-api/",\
+          "packageDependencies": [\
+            ["matrix-widget-api", "npm:1.1.1"],\
+            ["@types/events", "npm:3.0.0"],\
+            ["events", "npm:3.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -3437,6 +3467,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint", "npm:8.30.0"],\
             ["eslint-plugin-qwik", "virtual:b167ce6c64c53b452480325d5f3df819fa42e5a97460fa73067588d69450a40cfa246c03556be243d1e82e59207b47b63aa624ec67ef71f636f794e39606be37#npm:0.16.1"],\
             ["espree", "npm:9.4.1"],\
+            ["matrix-widget-api", "npm:1.1.1"],\
             ["node-fetch", "npm:3.3.0"],\
             ["prettier", "npm:2.8.1"],\
             ["typescript", "patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=ad5954"],\
