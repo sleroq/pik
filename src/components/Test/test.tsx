@@ -9,29 +9,33 @@ export const Test = component$(() => {
 
   return (
     <>
-      <button onClick$={() => {
-        if (!state.api) {
-          throw new Error('no api in state!')
-        }
+      <button
+        onClick$={() => {
+          if (!state.api) {
+            throw new Error('no api in state!')
+          }
 
-        console.log('sending sticker!')
+          console.log('sending sticker!')
 
-        const sticker = {
-          name: 'testing stickers!',
-          description: 'Isabella the Monero Girl glaring at the camera, cheeks red, with steam coming from her ears',
-          content: {
+          const sticker = {
+            name: 'testing stickers!',
+            description:
+              'Isabella the Monero Girl glaring at the camera, cheeks red, with steam coming from her ears',
+            content: {
               url: 'mxc://matrix.org/LLANaPGGqVzrvvQSWSxhSKRI',
               info: {
-                  h: 256,
-                  w: 256,
-                  mimetype: 'image/png',
-                  size: 164934,
-              }
+                h: 256,
+                w: 256,
+                mimetype: 'image/png',
+                size: 164934,
+              },
+            },
           }
-        }
-        
-        state.api.sendSticker(sticker)
-      }} class="test-button">
+
+          state.api.sendSticker(sticker)
+        }}
+        class="test-button"
+      >
         Send Sticker
       </button>
     </>

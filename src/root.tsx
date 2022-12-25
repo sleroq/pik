@@ -1,4 +1,13 @@
-import { component$, useStyles$, createContext, useStore, useClientEffect$, useContextProvider, noSerialize, NoSerialize } from '@builder.io/qwik'
+import {
+  component$,
+  useStyles$,
+  createContext,
+  useStore,
+  useClientEffect$,
+  useContextProvider,
+  noSerialize,
+  NoSerialize,
+} from '@builder.io/qwik'
 import {
   QwikCityProvider,
   RouterOutlet,
@@ -10,9 +19,9 @@ import { WidgetApi, MatrixCapabilities } from 'matrix-widget-api'
 import globalStyles from './global.css?inline'
 
 export interface SharedState {
-  api?: NoSerialize<WidgetApi>;
+  api?: NoSerialize<WidgetApi>
 }
-export const MyContext = createContext<SharedState>('everything');
+export const MyContext = createContext<SharedState>('everything')
 
 export default component$(() => {
   /**
@@ -23,11 +32,12 @@ export default component$(() => {
    */
   useStyles$(globalStyles)
 
-  const state = useStore<SharedState>({});
+  const state = useStore<SharedState>({})
 
   useClientEffect$(() => {
     // TODO: Figure out how to get this
-    const widgetId = '!kzgAp0oSUS85E6NS%3Asleroq.link_%40sleroq%3Asleroq.link_1671992491687'
+    const widgetId =
+      '!kzgAp0oSUS85E6NS%3Asleroq.link_%40sleroq%3Asleroq.link_1671992491687'
     console.log('widget id: ', widgetId)
 
     // TODO: Figure out how to get this
@@ -44,7 +54,7 @@ export default component$(() => {
     state.api = noSerialize(api)
   })
 
-  useContextProvider(MyContext, state);
+  useContextProvider(MyContext, state)
 
   return (
     <QwikCityProvider>
