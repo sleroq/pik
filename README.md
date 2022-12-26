@@ -1,68 +1,57 @@
-# Pik - stickers widget
+# pik
 
----
+This README outlines the details of collaborating on this Ember application.
+A short introduction of this app could easily go here.
 
-## How to use
+## Prerequisites
 
-Add widget to group with this command:
-```
-/addwidget https://stickers.sleroq.link
-```
+You will need the following things properly installed on your computer.
 
-## How to test
+* [Git](https://git-scm.com/)
+* [Node.js](https://nodejs.org/)
+* [Yarn](https://yarnpkg.com/)
+* [Ember CLI](https://cli.emberjs.com/release/)
+* [Google Chrome](https://google.com/chrome/)
 
-Start server:
-```shell
-yarn preview
-```
+## Installation
 
-Add widget to you group chat:
-```
-/addwidget https://localhost:4173
-```
+* `git clone <repository-url>` this repository
+* `cd pik`
+* `yarn install`
 
-This will only work with desktop app, to test in the browser you will need to host it somewhere or make tunnel with your server
+## Running / Development
 
-## Project Structure
+* `ember serve`
+* Visit your app at [http://localhost:4200](http://localhost:4200).
+* Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
 
-```
-├── public/
-│   └── ...
-└── src/
-    ├── components/
-    │   └── ...
-    └── routes/
-        └── ...
-```
+### Code Generators
 
-## Development
+Make use of the many generators for code, try `ember help generate` for more details
 
-Development mode uses [Vite's development server](https://vitejs.dev/). During development, the `dev` command will server-side render (SSR) the output.
+### Running Tests
 
-```shell
-yarn start
-```
+* `ember test`
+* `ember test --server`
 
-> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
+### Linting
 
-## Preview
+* `yarn lint`
+* `yarn lint:fix`
 
-The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to locally preview a production build, and it should not be used as a production server.
+### Building
 
-```shell
-yarn preview
-```
+* `ember build` (development)
+* `ember build --environment production` (production)
 
-## Production
+### Deploying
 
-The production build will generate client and server modules by running both client and server build commands. Additionally, the build command will use Typescript to run a type check on the source code.
+Specify what it takes to deploy your app.
 
-```shell
-yarn build
-```
+## Further Reading / Useful Links
 
-## Static Site Generator (Node.js)
-
-```
-yarn build.server
-```
+* [ember.js](https://emberjs.com/)
+* [ember-cli](https://cli.emberjs.com/release/)
+* Development Browser Extensions
+  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
+  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)

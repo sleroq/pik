@@ -1,33 +1,25 @@
-**/*.log
-**/.DS_Store
-*.
-.vscode/settings.json
-.history
-.yarn
-bazel-*
-bazel-bin
-bazel-out
-bazel-qwik
-bazel-testlogs
-dist
-dist-dev
-lib
-lib-types
-etc
-external
-node_modules
-temp
-tsc-out
-tsdoc-metadata.json
-target
-output
-rollup.config.js
-build
-.cache
-.vscode
-.rollup.cache
-dist
-tsconfig.tsbuildinfo
-vite.config.ts
-*.spec.tsx
-*.spec.ts
+# unconventional js
+/blueprints/*/files/
+/vendor/
+
+# compiled output
+/dist/
+/tmp/
+
+# dependencies
+/bower_components/
+/node_modules/
+
+# misc
+/coverage/
+!.*
+.*/
+.eslintcache
+
+# ember-try
+/.node_modules.ember-try/
+/bower.json.ember-try
+/npm-shrinkwrap.json.ember-try
+/package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try
