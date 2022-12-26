@@ -20,6 +20,7 @@ import globalStyles from './global.css?inline'
 
 export interface SharedState {
   api?: NoSerialize<WidgetApi>
+  isReady: 'yes' | 'not yet' | 'failed'
 }
 export const MyContext = createContext<SharedState>('everything')
 
@@ -32,14 +33,18 @@ export default component$(() => {
    */
   useStyles$(globalStyles)
 
-  const state = useStore<SharedState>({})
+  const state = useStore<SharedState>({isReady: 'not yet'})
 
   useClientEffect$(() => {
     const api = new WidgetApi()
     api.requestCapability(MatrixCapabilities.StickerSending)
 
+    const timout = setTimeout(() => state.isReady = 'failed', 5000)
+
     api.on('ready', async function () {
       console.log('widget is ready')
+      state.isReady = 'yes'
+      clearTimeout(timout)
     })
 
     api.start()
