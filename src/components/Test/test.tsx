@@ -41,9 +41,3 @@ export const Test = component$(() => {
     </>
   )
 })
-
-export async function sendSticker() {
-  // const api = new WidgetApi()
-  console.log('meow meow')
-  // console.log(api.sendSticker)
-}
