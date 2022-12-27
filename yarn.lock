@@ -1903,6 +1903,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jquery@npm:^3.6.3":
+  version: 3.6.3
+  resolution: "jquery@npm:3.6.3"
+  checksum: 0fd366bdcaa0c84a7a8751ce20f8192290141913978b5059574426d9b01f4365daa675f95aab3eec94fd794d27b08d32078a2236bef404b8ba78073009988ce6
+  languageName: node
+  linkType: hard
+
 "js-sdsl@npm:^4.1.4":
   version: 4.2.0
   resolution: "js-sdsl@npm:4.2.0"
@@ -2938,6 +2945,7 @@ __metadata:
     eslint: 8.30.0
     eslint-plugin-qwik: 0.16.1
     espree: ^9.4.1
+    jquery: ^3.6.3
     matrix-widget-api: ^1.1.1
     node-fetch: 3.3.0
     prettier: 2.8.1

@@ -33,13 +33,14 @@ export default component$(() => {
    */
   useStyles$(globalStyles)
 
-  const state = useStore<SharedState>({isReady: 'not yet'})
+  const state = useStore<SharedState>({ isReady: 'not yet' })
 
   useClientEffect$(() => {
+    console.log('useClientEffect$')
     const api = new WidgetApi()
     api.requestCapability(MatrixCapabilities.StickerSending)
 
-    const timout = setTimeout(() => state.isReady = 'failed', 5000)
+    const timout = setTimeout(() => (state.isReady = 'failed'), 5000)
 
     api.on('ready', async function () {
       console.log('widget is ready')
@@ -69,6 +70,13 @@ export default component$(() => {
       <body lang="en">
         <RouterOutlet />
         <ServiceWorkerRegister />
+        {/* Slowing down page loading for api to load before client post message */}
+        <img
+          src={`https://delay.sleroq.link/${Math.floor(
+            Math.random() * (2000 - 500) + 500 // Random timeout to prevent caching
+          )}/stickers.sleroq.link/funny-cat.jpg`}
+          style="display: none"
+        ></img>
       </body>
     </QwikCityProvider>
   )
