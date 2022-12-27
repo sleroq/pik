@@ -74,7 +74,7 @@ export default component$(() => {
         <img
           src={`https://delay.sleroq.link/${Math.floor(
             Math.random() * (2000 - 500) + 500 // Random timeout to prevent caching
-          )}/stickers.sleroq.link/funny-cat.jpg`}
+          )}/static.sleroq.link/funny-cat.jpg`}
           style="display: none"
         ></img>
       </body>
