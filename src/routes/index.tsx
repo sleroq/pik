@@ -1,4 +1,9 @@
-import { component$, useClientEffect$, useContext, useStore } from '@builder.io/qwik'
+import {
+  component$,
+  useClientEffect$,
+  useContext,
+  useStore,
+} from '@builder.io/qwik'
 import { DocumentHead } from '@builder.io/qwik-city'
 import { Test } from '~/components/Test/test'
 import { MyContext } from '~/root'
@@ -21,7 +26,8 @@ export default component$(() => {
         store.loading = 'Connecting...'
         break
       case 'failed':
-        store.loading = 'Failed to connect to the client\nTry to reopen the widget'
+        store.loading =
+          'Failed to connect to the client\nTry to reopen the widget'
         break
     }
   })

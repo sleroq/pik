@@ -5,6 +5,7 @@
 ## How to use
 
 Add widget to group with this command:
+
 ```
 /addwidget https://stickers.sleroq.link
 ```
@@ -12,11 +13,13 @@ Add widget to group with this command:
 ## How to test
 
 Start server:
+
 ```shell
 yarn preview
 ```
 
 Add widget to you group chat:
+
 ```
 /addwidget https://localhost:4173
 ```
