@@ -37,10 +37,10 @@
     "express": "4.17.3",
     "node-fetch": "3.3.0",
     "prettier": "2.8.1",
-    "typescript": "4.9.4",
+    "typescript": "^4.9.5",
     "undici": "5.14.0",
-    "vite": "4.0.3",
-    "vite-tsconfig-paths": "4.0.3"
+    "vite": "^4.1.4",
+    "vite-tsconfig-paths": "^4.0.5"
   },
   "dependencies": {
     "matrix-widget-api": "^1.1.1"
