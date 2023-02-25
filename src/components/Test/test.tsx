@@ -10,7 +10,7 @@ export const Test = component$(() => {
   return (
     <>
       <button
-        onClick$={() => {
+        onClick$={async () => {
           if (!state.api) {
             throw new Error('no api in state!')
           }
@@ -32,7 +32,7 @@ export const Test = component$(() => {
             },
           }
 
-          state.api.sendSticker(sticker)
+          await state.api.sendSticker(sticker)
         }}
         class="test-button"
       >
