@@ -1,146 +1,45 @@
-import { component$ } from '@builder.io/qwik';
-import type { DocumentHead } from '@builder.io/qwik-city';
-import { Link } from '@builder.io/qwik-city';
+import { component$, useContext, useStore, useTask$ } from "@builder.io/qwik";
+import type { DocumentHead } from "@builder.io/qwik-city";
+import { Link } from "@builder.io/qwik-city";
+import { MyContext } from "~/root";
+import StickerPacks from "~/components/sticker-packs/sticker-packs";
+
+interface LoadingProps {
+  text: string;
+}
+export const Loading = component$<LoadingProps>(({ text }) => {
+  return <div>{text}</div>;
+});
 
 export default component$(() => {
+  const state = useContext(MyContext);
+  const store = useStore({ loading: "Connecting..." });
+
+  useTask$(({ track }) => {
+    track(state);
+    switch (state.isReady) {
+      case "not yet":
+        store.loading = "Connecting...";
+        break;
+      case "failed":
+        store.loading =
+          "Failed to connect to the client\nTry to reopen the widget";
+        break;
+    }
+  });
+
   return (
     <div>
       <h1>
-        Welcome to Qwik <span class="lightning">⚡️</span>
+        Welcome to Pik <span class="lightning">⚡️</span>
       </h1>
 
-      <ul>
-        <li>
-          Check out the <code>src/routes</code> directory to get started.
-        </li>
-        <li>
-          Add integrations with <code>npm run qwik add</code>.
-        </li>
-        <li>
-          More info about development in <code>README.md</code>
-        </li>
-      </ul>
+      {state.isReady === "yes" ? (
+        <StickerPacks />
+      ) : (
+        <Loading text={store.loading} />
+      )}
 
-      <h2>Commands</h2>
-
-      <table class="commands">
-        <tbody>
-          <tr>
-            <td>
-              <code>npm run dev</code>
-            </td>
-            <td>Start the dev server and watch for changes.</td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run preview</code>
-            </td>
-            <td>Production build and start preview server.</td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run build</code>
-            </td>
-            <td>Production build.</td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run qwik add</code>
-            </td>
-            <td>Select an integration to add.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2>Add Integrations</h2>
-
-      <table class="commands">
-        <tbody>
-          <tr>
-            <td>
-              <code>npm run qwik add azure-swa</code>
-            </td>
-            <td>
-              <a href="https://learn.microsoft.com/azure/static-web-apps/overview" target="_blank">
-                Azure Static Web Apps
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run qwik add cloudflare-pages</code>
-            </td>
-            <td>
-              <a href="https://developers.cloudflare.com/pages" target="_blank">
-                Cloudflare Pages Server
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run qwik add express</code>
-            </td>
-            <td>
-              <a href="https://expressjs.com/" target="_blank">
-                Nodejs Express Server
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run qwik add netlify-edge</code>
-            </td>
-            <td>
-              <a href="https://docs.netlify.com/" target="_blank">
-                Netlify Edge Functions
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>npm run qwik add vercel-edge</code>
-            </td>
-            <td>
-              <a href="https://vercel.com/docs/concepts/get-started" target="_blank">
-                Vercel Edge Functions
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2>Community</h2>
-
-      <ul>
-        <li>
-          <span>Questions or just want to say hi? </span>
-          <a href="https://qwik.builder.io/chat" target="_blank">
-            Chat on discord!
-          </a>
-        </li>
-        <li>
-          <span>Follow </span>
-          <a href="https://twitter.com/QwikDev" target="_blank">
-            @QwikDev
-          </a>
-          <span> on Twitter</span>
-        </li>
-        <li>
-          <span>Open issues and contribute on </span>
-          <a href="https://github.com/BuilderIO/qwik" target="_blank">
-            GitHub
-          </a>
-        </li>
-        <li>
-          <span>Watch </span>
-          <a href="https://qwik.builder.io/media/" target="_blank">
-            Presentations, Podcasts, Videos, etc.
-          </a>
-        </li>
-      </ul>
-      <Link class="mindblow" href="/flower/">
-        Blow my mind 🤯
-      </Link>
       <Link class="todolist" href="/todolist/">
         TODO demo 📝
       </Link>
@@ -149,11 +48,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Welcome to Qwik',
+  title: "Pik",
   meta: [
     {
-      name: 'description',
-      content: 'Qwik site description',
+      name: "description",
+      content: "Matrix sticker picker",
     },
   ],
 };

@@ -1,5 +1,12 @@
-import { component$ } from '@builder.io/qwik';
-import { type DocumentHead, loader$, action$, zod$, z, Form } from '@builder.io/qwik-city';
+import { component$ } from "@builder.io/qwik";
+import {
+  type DocumentHead,
+  loader$,
+  action$,
+  zod$,
+  z,
+  Form,
+} from "@builder.io/qwik-city";
 
 interface ListItem {
   text: string;
@@ -45,5 +52,5 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Qwik To-Do',
+  title: "Qwik To-Do",
 };
