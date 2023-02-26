@@ -1,7 +1,8 @@
 .stickers {
-  text-align: center;
+  display: flex;
 }
 
-.link {
-  color: #b318f0;
+.image {
+  height: 100px;
+  width: 100px;
 }
