@@ -1,6 +1,6 @@
 {
-  "name": "my-qwik-basic-starter",
-  "description": "App with Routing built-in (recommended)",
+  "name": "Pik",
+  "description": "Matrix sticker picker",
   "engines": {
     "node": ">=15.0.0"
   },
