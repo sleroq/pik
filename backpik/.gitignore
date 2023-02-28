@@ -1,0 +1,4 @@
+/scripts/env.bash
+/node_modules/
+/built/
+/.idea/
