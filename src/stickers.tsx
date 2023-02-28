@@ -57,7 +57,7 @@ const Stickers: Component = () => {
 
   return (
     <div>
-      <div class={styles.stickerPack}>
+      <div>
         <div class={styles.packTitle}>{stickers().name}</div>
         <div class={styles.stickers}>
           <For each={stickers().stickers}>
