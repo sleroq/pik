@@ -1,8 +1,8 @@
-## Api server for youChat
+## Api server for Pik
 
 ```bash
 yarn
 yarn start
 ```
 
-Query example: `http://localhost:3000/api/?q=what's roblox`
+Query example: `http://localhost:3333/packs/?userId=@sleroq:sleroq.link`
