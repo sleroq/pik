@@ -1,28 +1,40 @@
-import express, { Request, Response } from 'express';
-import client from "./bot";
-
-const PORT = process.env['PORT'] || 3000;
+import express, { Request, Response } from "express";
+import { StickerPackModel } from "./db/sticker-pack.model.js";
+import { UserModel } from "./db/user.model.js";
 
 const app = express();
 
 interface APIRequest extends Request {
-    query: { user?: string };
+  query: { userId?: string };
 }
 
-app.get("/stickers", async (req: APIRequest, res: Response) => {
-    let user: string | undefined = req.query.user;
+app.get("/packs", async (req: APIRequest, res: Response) => {
+  let userId: string | undefined = req.query.userId;
 
-    if (!user) {
-        return res.json({
-            error: 'no user specified!',
-        });
-    }
+  if (!userId) {
+    return res.json({
+      error: "no userId specified!",
+    });
+  }
 
-    return res.json({ data: "meow" });
-})
+  let packs;
+  try {
+    packs = await getPacks(userId);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("no such user"))
+      res.json({ error: "No such user" });
 
-app.listen(PORT, async () => {
-    console.log('Server is up!');
-    await client.start()
-    console.log("Bot started!");
+    res.json({ error: "something went wrong" });
+  }
+
+  return res.json({ data: packs });
 });
+
+async function getPacks(userId: string) {
+  const user = await UserModel.findOne({ id: userId });
+  if (!user) throw new Error("no such user");
+
+  return StickerPackModel.find({ id: user.packs });
+}
+
+export default app;
