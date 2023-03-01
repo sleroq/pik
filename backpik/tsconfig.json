@@ -4,10 +4,5 @@
     "outDir": "built/",
     "target": "ES2022"
   },
-  "include": [
-    "src/server.ts",
-  ],
-  "exclude": [
-    "built/"
-  ]
+  "include": ["src/main.ts"]
 }
