@@ -4,8 +4,8 @@ import {
   AutojoinRoomsMixin,
   // RustSdkCryptoStorageProvider,
 } from "matrix-bot-sdk";
-import addTelegramPack from "./lib/telegram/add-pack.js";
-import saveOrFindUser from "./db/save-or-find-user.js";
+import addTelegramPack from "../lib/telegram/add-pack.js";
+import saveOrFindUser from "../db/save-or-find-user.js";
 
 const homeserverUrl = process.env["HOMESERVER"];
 const accessToken = process.env["ACCESS_TOKEN"];

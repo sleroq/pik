@@ -1,5 +1,5 @@
 import app from "./server.js";
-import client from "./bot.js";
+import client from "./bot/bot.js";
 import connectToMongoDB from "./db/connect.js";
 
 const API_PORT = process.env["API_PORT"] || 3000;
