@@ -2,9 +2,13 @@
   "name": "backpik",
   "version": "1.0.0",
   "description": "Backend for Pik sticker-picker",
-  "main": "src/server.ts",
+  "type": "module",
+  "exports": "src/main.ts",
   "author": "sleroq",
   "license": "MIT",
+  "engines": {
+    "node": ">=16.x"
+  },
   "scripts": {
     "start": "tsc && node built/main.js"
   },

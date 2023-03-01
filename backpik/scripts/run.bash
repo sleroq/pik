@@ -8,4 +8,4 @@ cd "$(dirname "$SCRIPTPATH")"
 
 source ./scripts/env.bash
 
-tsc && node built/server.js
+tsc && node built/main.js
