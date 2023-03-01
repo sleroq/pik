@@ -1,7 +1,7 @@
 {
   "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
-    "outDir": "built/",
+    "outDir": "dist/",
     "target": "ES2022"
   },
   "include": ["src/main.ts"]

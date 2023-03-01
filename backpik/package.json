@@ -10,7 +10,7 @@
     "node": ">=16.x"
   },
   "scripts": {
-    "start": "tsc && node built/main.js"
+    "start": "tsc && node dist/main.js"
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^3.0.1",
