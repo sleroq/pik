@@ -1,4 +1,6 @@
 /scripts/env.bash
 /node_modules/
-/built/
+/dist/
 /.idea/
+bot-state.json
+/bot-secrets/
