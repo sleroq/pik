@@ -4,8 +4,7 @@ import {
   AutojoinRoomsMixin,
   // RustSdkCryptoStorageProvider,
 } from "matrix-bot-sdk";
-import addTelegramPack from "../lib/telegram/add-pack.js";
-import saveOrFindUser from "../db/save-or-find-user.js";
+import importTelegramPack from "./handlers/import-telegram-pack.js";
 
 const homeserverUrl = process.env["HOMESERVER"];
 const accessToken = process.env["ACCESS_TOKEN"];
@@ -20,17 +19,19 @@ const storage = new SimpleFsStorageProvider("bot-state.json");
 const client = new MatrixClient(
   homeserverUrl,
   accessToken,
-  storage,
+  storage
   // cryptoProvider
 );
 AutojoinRoomsMixin.setupOnClient(client);
+
+const botId = await client.getUserId();
 
 client.on(
   "room.message",
   async function handleCommand(roomId: string, event: any) {
     // Don't handle unhelpful events (ones that aren't text messages, are redacted, or sent by us)
     if (event["content"]?.["msgtype"] !== "m.text") return;
-    if (event["sender"] === (await client.getUserId())) return;
+    if (event["sender"] === botId) return;
 
     const userId: string = event["sender"];
 
@@ -43,28 +44,17 @@ client.on(
       return;
     }
 
-    if (body.startsWith("!tg https://t.me/addstickers/")) {
-      await client.setTyping(roomId, true, 30000)
-
-      let user;
-      try {
-        user = await saveOrFindUser(userId, client);
-      } catch (error) {
-        console.log(error);
-        await client.replyNotice(roomId, event, "Something went wrong :c");
-        return;
-      }
+    if (body.startsWith("!import https://t.me/addstickers/")) {
+      await client.setTyping(roomId, true, 30000);
 
       try {
-        await addTelegramPack(user, body.trim().split("/addstickers/")[1]);
-      } catch (error) {
-        console.log(error);
-        await client.replyNotice(roomId, event, "Something went wrong :c");
+        await importTelegramPack(roomId, userId, event, body);
+      } catch (err) {
+        console.error(err);
+        await client.replyNotice(roomId, event, "Something went wrong :(");
       }
 
-
-        await client.replyNotice(roomId, event, "Done!");
-        await client.setTyping(roomId, false )
+      await client.setTyping(roomId, false);
     }
 
     // Now that we've passed all the checks, we can actually act upon the command
