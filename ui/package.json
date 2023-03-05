@@ -6,7 +6,9 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "preview": "vite preview",
+    "lint": "prettier .",
+    "lint:fix": "prettier -w ."
   },
   "license": "MIT",
   "devDependencies": {
