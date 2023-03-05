@@ -49,9 +49,7 @@ export async function getFileInfo(id: string) {
 
   const res = await got(url).json<ApiResponse<TelegramFile>>();
   if (!res.ok) {
-    throw new Error(
-        `Api response: ${res.error_code} - ${res.description}`
-    );
+    throw new Error(`Api response: ${res.error_code} - ${res.description}`);
   }
 
   return res.result;
@@ -63,7 +61,7 @@ export async function downloadFile(id: string, fPath: string) {
   url.search = params.toString();
 
   const res = await got<Buffer>(url);
-  return res.body;
+  return res.rawBody;
 }
 
 export async function getPackInfo(name: string) {
@@ -73,9 +71,7 @@ export async function getPackInfo(name: string) {
 
   const res = await got(url).json<ApiResponse<TelegramPack>>();
   if (!res.ok) {
-    throw new Error(
-        `Api response: ${res.error_code} - ${res.description}`
-    );
+    throw new Error(`Api response: ${res.error_code} - ${res.description}`);
   }
 
   return res.result;
