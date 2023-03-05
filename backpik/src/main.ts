@@ -11,9 +11,7 @@ if (!DB_URL) {
   );
 }
 if (!process.env["TELEGRAM_BOT_TOKEN"]) {
-  throw new Error(
-      "You have to set TELEGRAM_BOT_TOKEN environment variable"
-  );
+  throw new Error("You have to set TELEGRAM_BOT_TOKEN environment variable");
 }
 
 await connectToMongoDB(DB_URL);
