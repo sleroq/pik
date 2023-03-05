@@ -1,9 +1,9 @@
 import { MatrixCapabilities, WidgetApi } from "matrix-widget-api";
 
 function parseFragment() {
-  const fragmentString = window.location.hash || "?";
+  const fragmentString = window.location.search || "?";
   return new URLSearchParams(
-    fragmentString.substring(Math.max(fragmentString.indexOf("?"), 0))
+    fragmentString.substring(Math.max(fragmentString.indexOf("?"), 1))
   );
 }
 
