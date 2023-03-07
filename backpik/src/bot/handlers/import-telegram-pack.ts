@@ -1,5 +1,5 @@
 import saveOrFindUser from "../../db/save-or-find-user.js";
-import client from "../bot.js";
+import client, { homeserverUrl } from "../bot.js";
 import {
   Sticker,
   StickerModel,
@@ -37,7 +37,7 @@ export default async function importTelegramPack(
   try {
     user = await saveOrFindUser(userId, client);
   } catch (error) {
-    throw new Werror(error, 'getting/saving user')
+    throw new Werror(error, "getting/saving user");
   }
 
   const packName = body.match(/t\.me\/addstickers\/(.+)($|\s)/m)?.[1];
@@ -59,7 +59,11 @@ export default async function importTelegramPack(
     return;
   }
 
-  const botMsgId = await client.replyNotice(roomId, event, "Added to the queue.");
+  const botMsgId = await client.replyNotice(
+    roomId,
+    event,
+    "Added to the queue."
+  );
 
   queue.push({
     roomId,
@@ -84,55 +88,77 @@ async function processQueue(
 
   try {
     console.log("processing");
-    for (const [i, r] of queue.entries()) {
-      await editMessage(
-        client,
-        r.roomId,
-        r.botMsgId,
-        `${i + 1}/${queue.length}`
-      );
-    }
-
-    await editMessage(
-        client,
-        req.roomId,
-        req.botMsgId,
-        "Importing your pack"
+    await processItem(client, queue, req, user);
+  } catch (error) {
+    console.error("processing queue: ", error);
+    await editErrorMessage(
+      client,
+      req.roomId,
+      req.botMsgId,
+      "Something went wrong :("
     );
+  }
 
-
-    console.log("adding new sticker pack");
-    await addTelegramPack(user, req.packName);
-
-    await editMessage(
-        client,
-        req.roomId,
-        req.botMsgId,
-        'Done!'
-    );
-
+  try {
     await processQueue(queue, user, client);
   } catch (error) {
     processing = false;
     console.error("processing queue: ", error);
-    await editErrorMessage(client, req.roomId, req.botMsgId, 'Something went wrong :(')
-  }
-}
-
-async function editErrorMessage(client: MatrixClient, roomId: string, botMsgId: string, msg: string) {
-  try {
-    await editMessage(
-        client,
-        roomId,
-        botMsgId,
-        msg
+    await editErrorMessage(
+      client,
+      req.roomId,
+      req.botMsgId,
+      "Something went wrong :("
     );
-  } catch (error) {
-    console.error(error)
   }
 }
 
-// @ts-ignore
+async function processItem(
+  client: MatrixClient,
+  queue: QueueItem[],
+  req: QueueItem,
+  user: User
+) {
+  for (const [i, r] of queue.entries()) {
+    await editMessage(client, r.roomId, r.botMsgId, `${i + 1}/${queue.length}`);
+  }
+
+  await editMessage(client, req.roomId, req.botMsgId, "Importing your pack");
+
+  try {
+    await addTelegramPack(user, req.packName);
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes("Not supported")) {
+        await editMessage(
+          client,
+          req.roomId,
+          req.botMsgId,
+          "Video packs will be supported soon!"
+        );
+        return;
+      } else {
+        throw new Werror(error, "adding pack from telegram");
+      }
+    }
+  }
+
+  await editMessage(client, req.roomId, req.botMsgId, "Done!");
+}
+
+async function editErrorMessage(
+  client: MatrixClient,
+  roomId: string,
+  botMsgId: string,
+  msg: string
+) {
+  try {
+    await editMessage(client, roomId, botMsgId, msg);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function addTelegramPack(user: User, packName: string) {
   const stickerPack = new StickerPackModel({
     id: `tg-${packName}`,
@@ -142,6 +168,10 @@ async function addTelegramPack(user: User, packName: string) {
   });
 
   const pack = await getPackInfo(packName);
+
+  if (pack.is_video || pack.is_animated) {
+    throw new Error("Not supported");
+  }
 
   // TODO: Do not save same stickers on retry?
   // or just remove duplicates later
@@ -176,7 +206,8 @@ async function addTGSticker(
     packId,
     mediaId: mxcUrl.split("/")[3],
     description: sticker.emoji,
-    server: client.homeserverUrl,
+    server: homeserverUrl,
+    serverAddress: client.homeserverUrl, // TODO: what if it changes?
   });
 
   await matrixSticker.save();

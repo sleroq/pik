@@ -5,19 +5,22 @@ import {
   // RustSdkCryptoStorageProvider,
 } from "matrix-bot-sdk";
 import importTelegramPack from "./handlers/import-telegram-pack.js";
+import { getServerUrl } from "../lib/matrix.js";
 
-const homeserverUrl = process.env["HOMESERVER"];
+export const homeserverUrl = process.env["HOMESERVER"];
 const accessToken = process.env["ACCESS_TOKEN"];
 
 if (!homeserverUrl || !accessToken) {
   throw new Error("Specify homeserver and access_token environment variables");
 }
 
+const actualHomeserverUrl = await getServerUrl(homeserverUrl);
+
 const storage = new SimpleFsStorageProvider("bot-state.json");
 // const cryptoProvider = new RustSdkCryptoStorageProvider("bot-secrets");
 
 const client = new MatrixClient(
-  homeserverUrl,
+  actualHomeserverUrl,
   accessToken,
   storage
   // cryptoProvider

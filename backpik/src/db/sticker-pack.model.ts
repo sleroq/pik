@@ -4,12 +4,14 @@ interface ISticker {
   packId: string;
   mediaId: string;
   server: string;
+  serverAddress: string;
   description: string;
 }
 const stickerSchema = new Schema<ISticker>({
   packId: { type: String, required: true },
   mediaId: { type: String, required: true },
   server: { type: String, required: true },
+  serverAddress: { type: String, required: true },
   description: { type: String, required: true },
 });
 export type Sticker = ISticker & Document<any, any, ISticker>;
