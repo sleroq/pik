@@ -2,9 +2,7 @@ import { MatrixCapabilities, WidgetApi } from "matrix-widget-api";
 
 function parseFragment() {
   const fragmentString = window.location.search || "?";
-  return new URLSearchParams(
-    fragmentString.substring(Math.max(fragmentString.indexOf("?"), 1))
-  );
+  return new URLSearchParams(fragmentString.substring(1));
 }
 
 function assertParam(fragment: URLSearchParams, name: string) {
@@ -17,6 +15,8 @@ function assertParam(fragment: URLSearchParams, name: string) {
 const qs = parseFragment();
 export const widgetId = assertParam(qs, "widgetId");
 export const userId = assertParam(qs, "userId");
+
+// TODO: Handle themes
 
 export const widgetApi: WidgetApi = new WidgetApi(widgetId);
 widgetApi.requestCapability(MatrixCapabilities.StickerSending);
