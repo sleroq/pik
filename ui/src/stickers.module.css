@@ -2,6 +2,7 @@
 
 .stickers {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .image {
