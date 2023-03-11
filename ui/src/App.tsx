@@ -2,37 +2,30 @@ import type { Component } from "solid-js";
 
 import styles from "./App.module.css";
 import Stickers from "./stickers";
-import { createSignal, Match, Switch } from "solid-js";
-import { widgetApi } from "./connect-widget";
+import {createSignal, Match, Show, Switch} from "solid-js";
+import widgetApi from "./connect-widget";
 
 const Loading: Component = () => {
   return <div class="loading">Connecting</div>;
 };
 
 const App: Component = () => {
-  const [widgetIsReady, setReady] = createSignal("not yet");
-  const connectTimout = setTimeout(() => setReady("failed"), 2000);
+  const [connectionFailed, setFailed] = createSignal<boolean>(false);
+  const connectTimout = setTimeout(() => setFailed(true), 2000);
 
+  // We can't rely on this event to show stickers only when widget is connected
+  // Because at the moment, it does not work properly on android
+  clearTimeout(connectTimout); // FIXME As soon as it's properly implemented on Android & IOS
   widgetApi.on("ready", function () {
-    setReady("yes");
     clearTimeout(connectTimout);
   });
 
   return (
     <div class={styles.App}>
-      <Switch
-        fallback={
-          "Failed to connect to matrix client. Try to restart the widget."
-        }
-      >
-        <Match when={widgetIsReady() === "yes"} keyed>
-          <Stickers />
-        </Match>
-        <Match when={widgetIsReady() === "not yet"} keyed>
-          <Loading />
-        </Match>
-      </Switch>
-      {widgetIsReady() === "yes" ?? <Stickers />}
+      <Show when={connectionFailed()} keyed>
+        <span>Seems like widget is not connected to the client. Try restarting the widget.</span>
+      </Show>
+      <Stickers />
     </div>
   );
 };
