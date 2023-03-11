@@ -38,6 +38,29 @@ async function getPacks(userId: string) {
   return StickerPackModel.find({ id: user.packs });
 }
 
+interface AuthRequest extends Request {
+  query: {
+    userId?: string
+    token?: string
+  };
+}
+
+app.get("/api/auth", async (req: AuthRequest, res: Response) => {
+  const userId: string | undefined = req.query.userId;
+  const token: string | undefined = req.query.token;
+
+  if (!userId) return missing(res, "userId");
+  if (!token) return missing(res, "token");
+
+  const user = await UserModel.findOne({ id: userId });
+  if (!user) return res.status(404).json({ error: "No such user" });
+
+  if (!user.tokens.find((t) => t.token === token))
+    return res.json({ data: { auth: false } });
+
+  return res.json({ data: { auth: true } });
+});
+
 interface RemovePackRequest extends Request {
   body: {
     userId?: string;
@@ -58,7 +81,7 @@ app.post("/api/removePack", async (req: RemovePackRequest, res: Response) => {
   if (!user) return res.status(404).json({ error: "No such user" });
 
   if (!user.tokens.find((t) => t.token === token))
-    return res.status(403).json({ error: "Incorrect auth token" });
+    return res.status(503).json({ error: "Incorrect auth token" });
 
   user.packs = user.packs.filter((p) => p !== packId);
 
