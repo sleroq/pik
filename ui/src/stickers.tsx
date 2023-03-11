@@ -11,6 +11,7 @@ import styles from "./stickers.module.css";
 import widgetApi, { USERID } from "./connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
 import { useToken } from "./lib/token";
+import Cookie from "./lib/cookie";
 
 interface StickerPack {
   name: string;
@@ -62,6 +63,7 @@ const StickerPack: Component<StickerPackProps> = ({
   removePack,
 }: StickerPackProps) => {
   const [stickers, setStickers] = createSignal<ServerSticker[]>();
+  const [folded, setFolded] = createSignal<boolean>(false);
   setStickers(pack.stickers);
 
   async function handleStickerTap({ target }: Event) {
@@ -76,33 +78,43 @@ const StickerPack: Component<StickerPackProps> = ({
     await widgetApi.sendSticker(makeSticker(sticker));
   }
 
+  if (Boolean(Cookie.get(`${pack.id}_folded`)))
+      setFolded(true)
+
+  const toggleFold = () => {
+    setFolded(!folded())
+    Cookie.set(`${pack.id}_folded`, String(folded()))
+  }
+
   return (
     <div>
-      <div class={styles.packTitle}>
+      <div class={styles.packTitle} onClick={toggleFold}>
         <div>{pack.name}</div>
         <div onClick={[removePack, pack.id]}>X</div>
       </div>
-      <div class={styles.stickers}>
-        <For each={stickers()}>
-          {(sticker) => {
-            const server = new URL(sticker.server);
-            const readServer = new URL(sticker.serverAddress);
-            const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
+      <Show when={!folded()} keyed>
+        <div class={styles.stickers}>
+          <For each={stickers()}>
+            {(sticker) => {
+              const server = new URL(sticker.server);
+              const readServer = new URL(sticker.serverAddress);
+              const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
 
-            return (
-              // TODO: Make a custom element and pass sticker?
-              <div class={styles.sticker}>
-                <img
-                  src={srcUrl}
-                  onClick={handleStickerTap}
-                  class={styles.image}
-                  alt={sticker.description}
-                />
-              </div>
-            );
-          }}
-        </For>
-      </div>
+              return (
+                  // TODO: Make a custom element and pass sticker?
+                  <div class={styles.sticker}>
+                    <img
+                        src={srcUrl}
+                        onClick={handleStickerTap}
+                        class={styles.image}
+                        alt={sticker.description}
+                    />
+                  </div>
+              );
+            }}
+          </For>
+        </div>
+      </Show>
     </div>
   );
 };
