@@ -4,7 +4,7 @@ interface IUser {
   id: string;
   name: string;
   packs: string[];
-  tokens: { token: string, date: Date }[]
+  tokens: { token: string; date: Date }[];
 }
 
 export const userSchema = new Schema<IUser>({

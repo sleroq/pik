@@ -6,8 +6,8 @@ interface ISticker {
   server: string;
   serverAddress: string;
   description: string;
-  width: number,
-  height: number,
+  width: number;
+  height: number;
 }
 const stickerSchema = new Schema<ISticker>({
   packId: { type: String, required: true },
