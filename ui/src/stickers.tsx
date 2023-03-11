@@ -134,7 +134,9 @@ const Stickers: Component = () => {
           <span>
             Seems like, you don't have any packs. Add them using
             <code style="background-color: lightgray">
-              <a href="https://matrix.to/#/@pik:virto.community">@pik:virto.community</a>
+              <a href="https://matrix.to/#/@pik:virto.community">
+                @pik:virto.community
+              </a>
             </code>
             bot
           </span>
