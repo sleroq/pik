@@ -3,6 +3,15 @@
   background-color: #e4aadb;
 }
 
+.sticker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  margin: 5px;
+}
+
 .stickers {
   display: flex;
   flex-wrap: wrap;
