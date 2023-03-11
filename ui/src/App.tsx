@@ -4,10 +4,7 @@ import styles from "./App.module.css";
 import Stickers from "./stickers";
 import { createSignal, Show } from "solid-js";
 import widgetApi from "./connect-widget";
-
-const Loading: Component = () => {
-  return <div class="loading">Connecting</div>;
-};
+import Header from "./header/header";
 
 const App: Component = () => {
   const [connectionFailed, setFailed] = createSignal<boolean>(false);
@@ -22,6 +19,7 @@ const App: Component = () => {
 
   return (
     <div class={styles.App}>
+      <Header />
       <Show when={connectionFailed()} keyed>
         <span>
           Seems like widget is not connected to the client. Try restarting the

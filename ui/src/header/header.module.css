@@ -1,0 +1,9 @@
+.popup {
+  position: absolute;
+  background-color: #cfb2ff;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+  padding: 5px;
+}

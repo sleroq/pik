@@ -10,6 +10,7 @@ import {
 import styles from "./stickers.module.css";
 import widgetApi, { USERID } from "./connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
+import { useToken } from "./lib/token";
 
 interface StickerPack {
   name: string;
@@ -35,6 +36,7 @@ interface ServerStickerPack {
 
 interface StickerPackProps {
   pack: ServerStickerPack;
+  removePack: (id: string) => Promise<void>;
 }
 
 const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
@@ -57,6 +59,7 @@ const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
 
 const StickerPack: Component<StickerPackProps> = ({
   pack,
+  removePack,
 }: StickerPackProps) => {
   const [stickers, setStickers] = createSignal<ServerSticker[]>();
   setStickers(pack.stickers);
@@ -75,7 +78,10 @@ const StickerPack: Component<StickerPackProps> = ({
 
   return (
     <div>
-      <div class={styles.packTitle}>{pack.name}</div>
+      <div class={styles.packTitle}>
+        <div>{pack.name}</div>
+        <div onClick={[removePack, pack.id]}>X</div>
+      </div>
       <div class={styles.stickers}>
         <For each={stickers()}>
           {(sticker) => {
@@ -105,9 +111,7 @@ const fetchPacks = async (userId: string): Promise<ServerStickerPack[]> => {
   let res;
   try {
     res = await (
-      await fetch(
-        new URL(`/api/packs?userId=${userId}`, env.API_URL)
-      )
+      await fetch(new URL(`/api/packs?userId=${userId}`, env.API_URL))
     ).json();
   } catch (err) {
     console.error(err);
@@ -118,10 +122,28 @@ const fetchPacks = async (userId: string): Promise<ServerStickerPack[]> => {
   return res?.data || [];
 };
 
+const sendRemovePack = async (
+  userId: string,
+  token: string,
+  packId: string
+): Promise<Response> =>
+  await fetch(new URL(`/api/removePack`, env.API_URL), {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      packId: packId,
+      userId: userId,
+    }),
+  });
+
 const Stickers: Component = () => {
   const [userId, setUserId] = createSignal(USERID);
   const [noPacks, setNoPacks] = createSignal(false);
-  const [packs] = createResource(userId, fetchPacks);
+  const [packs, setPacks] = createResource(userId, fetchPacks);
+  const token = useToken();
 
   createEffect(() => {
     if (packs()?.length === 0) {
@@ -130,11 +152,16 @@ const Stickers: Component = () => {
     }
   });
 
+  const removePack = async (id: string): Promise<void> => {
+    await sendRemovePack(USERID, token, id);
+    setPacks.mutate(packs()?.filter((p) => p.id !== id));
+  };
+
   return (
     <div>
       <div>
         <span>{packs.loading && "Loading..."}</span>
-        <Show when={noPacks()}>
+        <Show when={noPacks()} keyed>
           <span>
             Seems like, you don't have any packs. Add them using
             <code style="background-color: lightgray">
@@ -148,7 +175,9 @@ const Stickers: Component = () => {
           <br />
           <span>Trending stickers:</span>
         </Show>
-        <For each={packs()}>{(pack) => <StickerPack pack={pack} />}</For>
+        <For each={packs()}>
+          {(pack) => <StickerPack pack={pack} removePack={removePack} />}
+        </For>
       </div>
     </div>
   );
