@@ -8,7 +8,7 @@ interface APIRequest extends Request {
   query: { userId?: string };
 }
 
-app.get("/packs", async (req: APIRequest, res: Response) => {
+app.get("/api/packs", async (req: APIRequest, res: Response) => {
   let userId: string | undefined = req.query.userId;
 
   if (!userId) {
