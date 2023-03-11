@@ -83,11 +83,12 @@ async function processQueue(
   user: User,
   client: MatrixClient
 ) {
+  processing = true;
   const req = queue.pop();
   if (!req) return;
 
   try {
-    console.log("processing");
+    console.log(`processing ${req.packName}`);
     await processItem(client, queue, req, user);
   } catch (error) {
     console.error("processing queue: ", error);
