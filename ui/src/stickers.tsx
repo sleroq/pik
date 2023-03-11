@@ -102,7 +102,7 @@ const fetchPacks = async (userId: string): Promise<ServerStickerPack[]> => {
   try {
     res = await (
       await fetch(
-        new URL(`/api/packs?userId=${userId}`, import.meta.env.BASE_URL)
+        new URL(`/api/packs?userId=${userId}`, env.API_URL)
       )
     ).json();
   } catch (err) {
