@@ -82,12 +82,6 @@ const StickerPack: Component<StickerPackProps> = ({
             const server = new URL(sticker.server);
             const readServer = new URL(sticker.serverAddress);
             const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
-            const style = `
-            height: ${Math.ceil((sticker.height / sticker.width) * 120)}px;
-            width: ${Math.ceil((sticker.width / sticker.height) * 120)}px;
-            `;
-
-            console.log(style);
 
             return (
               // TODO: Make a custom element and pass sticker?
@@ -97,7 +91,6 @@ const StickerPack: Component<StickerPackProps> = ({
                   onClick={handleStickerTap}
                   class={styles.image}
                   alt={sticker.description}
-                  style={style}
                 />
               </div>
             );
