@@ -6,6 +6,7 @@ import {
 } from "matrix-bot-sdk";
 import importTelegramPack from "./handlers/import-telegram-pack.js";
 import { getServerUrl } from "../lib/matrix.js";
+import authWidget from "./handlers/auth-widget.js";
 
 export const homeserverUrl = process.env["HOMESERVER"];
 const accessToken = process.env["ACCESS_TOKEN"];
@@ -33,40 +34,68 @@ client.on(
   "room.message",
   async function handleCommand(roomId: string, event: any) {
     // Don't handle unhelpful events (ones that aren't text messages, are redacted, or sent by us)
-    if (event["content"]?.["msgtype"] !== "m.text") return;
+    if (event?.["content"]?.["msgtype"] !== "m.text") return;
     if (event["sender"] === botId) return;
 
     const userId: string = event["sender"];
 
-    // Check to ensure that the `!hello` command is being run
-    const body = event["content"]["body"];
+    const body = event["content"]?.["body"];
     if (!body) return;
 
-    if (body.startsWith("!hello")) {
-      await client.replyNotice(roomId, event, "Hello world!");
-      return;
-    }
+    if (body.startsWith("!pik hello"))
+      await handle(roomId, event, async () => {
+        await client.replyNotice(roomId, event, "Hello world!");
+      });
 
-    if (body.startsWith("!import https://t.me/addstickers/")) {
-      await client.setTyping(roomId, true, 30000);
+    if (body.startsWith("!pik auth "))
+      await handle(roomId, event, async () => {
+        await authWidget(roomId, userId, event, body);
+      });
 
-      try {
+    if (body.startsWith("!pik import https://t.me/addstickers/"))
+      await handle(roomId, event, async () => {
+        await typing(roomId, true)
+
         await importTelegramPack(roomId, userId, event, body);
-      } catch (err) {
-        console.error(err);
-        await client.replyNotice(roomId, event, "Something went wrong :(");
-      }
 
-      await client.setTyping(roomId, false);
-    }
+        await typing(roomId, false)
+      });
 
     // Now that we've passed all the checks, we can actually act upon the command
   }
 );
 
 client.on("room.join", async (roomId: string, event: any) => {
-  // The client has joined `roomId`
-  await client.replyNotice(roomId, event, "Добро пожаловать лох");
+  await handle(roomId, event, async () => {
+    await client.replyNotice(roomId, event, "Добро пожаловать лох");
+  });
 });
+
+async function handle<F extends Function>(roomId: string, event: string, f: F) {
+  try {
+    await f();
+  } catch (err) {
+    console.error(err);
+    await errorReply(roomId, event);
+  }
+}
+
+async function errorReply(roomId: string, event: string, msg?: string) {
+  if (!msg) msg = "Something went wrong :(";
+
+  try {
+    await client.replyNotice(roomId, event, msg);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function typing(roomId: string, state: boolean) {
+    try {
+        await client.setTyping(roomId, state, 30000);
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 export default client;
