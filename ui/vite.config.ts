@@ -3,6 +3,7 @@ import solidPlugin from "vite-plugin-solid";
 
 export default defineConfig({
   plugins: [solidPlugin()],
+  base: "https://pik.sleroq.link",
   server: {
     port: 3000,
   },
