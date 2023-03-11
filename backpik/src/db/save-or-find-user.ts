@@ -13,6 +13,7 @@ export default async function saveOrFindUser(
       id: id,
       name: userInfo.displayname,
       packs: [], // TODO: Default packs
+      tokens: [],
     });
 
     await user.save();
