@@ -6,6 +6,8 @@ interface ISticker {
   server: string;
   serverAddress: string;
   description: string;
+  width: number,
+  height: number,
 }
 const stickerSchema = new Schema<ISticker>({
   packId: { type: String, required: true },
@@ -13,6 +15,8 @@ const stickerSchema = new Schema<ISticker>({
   server: { type: String, required: true },
   serverAddress: { type: String, required: true },
   description: { type: String, required: true },
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
 });
 export type Sticker = ISticker & Document<any, any, ISticker>;
 export const StickerModel = model<ISticker>("Sticker", stickerSchema);

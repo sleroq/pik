@@ -208,6 +208,8 @@ async function addTGSticker(
     description: sticker.emoji,
     server: homeserverUrl,
     serverAddress: client.homeserverUrl, // TODO: what if it changes?
+    width: sticker.width,
+    height: sticker.height,
   });
 
   await matrixSticker.save();

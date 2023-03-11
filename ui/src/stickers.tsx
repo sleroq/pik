@@ -22,6 +22,8 @@ interface ServerSticker {
   server: string;
   serverAddress: string;
   description: string;
+  width: number;
+  height: number;
 }
 
 interface ServerStickerPack {
@@ -44,8 +46,8 @@ const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
     content: {
       url: `mxc://${server.host}/${s.mediaId}`,
       info: {
-        h: 256,
-        w: 256, // TODO: Save sizes
+        h: s.height,
+        w: s.width,
         mimetype: "image/webp", // TODO: Save format
         size: 164934,
       },
@@ -80,15 +82,24 @@ const StickerPack: Component<StickerPackProps> = ({
             const server = new URL(sticker.server);
             const readServer = new URL(sticker.serverAddress);
             const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
+            const style = `
+            height: ${Math.ceil((sticker.height / sticker.width) * 120)}px;
+            width: ${Math.ceil((sticker.width / sticker.height) * 120)}px;
+            `;
+
+            console.log(style);
 
             return (
               // TODO: Make a custom element and pass sticker?
-              <img
-                src={`${srcUrl}`}
-                onClick={handleStickerTap}
-                class={styles.image}
-                alt={sticker.description}
-              />
+              <div class={styles.sticker}>
+                <img
+                  src={srcUrl}
+                  onClick={handleStickerTap}
+                  class={styles.image}
+                  alt={sticker.description}
+                  style={style}
+                />
+              </div>
             );
           }}
         </For>
