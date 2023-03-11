@@ -27,7 +27,7 @@ export default async function authWidget(
   });
 
   while (user.tokens.length > 20) {
-    user.tokens.shift()
+    user.tokens.shift();
   }
 
   await user.save();

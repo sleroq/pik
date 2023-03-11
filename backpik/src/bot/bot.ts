@@ -54,11 +54,11 @@ client.on(
 
     if (body.startsWith("!pik import https://t.me/addstickers/"))
       await handle(roomId, event, async () => {
-        await typing(roomId, true)
+        await typing(roomId, true);
 
         await importTelegramPack(roomId, userId, event, body);
 
-        await typing(roomId, false)
+        await typing(roomId, false);
       });
 
     // Now that we've passed all the checks, we can actually act upon the command
@@ -91,11 +91,11 @@ async function errorReply(roomId: string, event: string, msg?: string) {
 }
 
 async function typing(roomId: string, state: boolean) {
-    try {
-        await client.setTyping(roomId, state, 30000);
-    } catch (err) {
-        console.error(err);
-    }
+  try {
+    await client.setTyping(roomId, state, 30000);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export default client;
