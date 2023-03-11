@@ -1,8 +1,14 @@
 import type { Component } from "solid-js";
-import { createSignal, For } from "solid-js";
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  For,
+  Show,
+} from "solid-js";
 
 import styles from "./stickers.module.css";
-import { widgetApi } from "./connect-widget";
+import widgetApi, { USERID } from "./connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
 
 interface StickerPack {
@@ -10,85 +16,135 @@ interface StickerPack {
   stickers: IStickerActionRequestData[];
 }
 
-const Stickers: Component = () => {
-  const [stickers] = createSignal<StickerPack>({
-    name: "pack 1",
-    stickers: [
-      {
-        name: "testing stickers!",
-        description:
-          "Isabella the Monero Girl glaring at the camera, cheeks red, with steam coming from her ears",
-        content: {
-          url: "mxc://matrix.org/LLANaPGGqVzrvvQSWSxhSKRI",
-          info: {
-            h: 256,
-            w: 256,
-            mimetype: "image/png",
-            size: 164934,
-          },
-        },
+interface ServerSticker {
+  packId: string;
+  mediaId: string;
+  server: string;
+  serverAddress: string;
+  description: string;
+}
+
+interface ServerStickerPack {
+  id: string;
+  source: string;
+  name: string;
+  stickers: ServerSticker[];
+}
+
+interface StickerPackProps {
+  pack: ServerStickerPack;
+}
+
+const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
+  const server = new URL(s.server);
+
+  return {
+    name: s.description, // TODO: Add actual names?
+    description: s.description,
+    content: {
+      url: `mxc://${server.host}/${s.mediaId}`,
+      info: {
+        h: 256,
+        w: 256, // TODO: Save sizes
+        mimetype: "image/webp", // TODO: Save format
+        size: 164934,
       },
-      {
-        name: "testing stickers!",
-        description:
-          "A camera set to self-timer is just about to take your picture. Smile!",
-        content: {
-          url: "mxc://matrix.org/ZOQhwITjfqUKJyStDYlRJNzD",
-          info: {
-            h: 256,
-            w: 256,
-            mimetype: "image/gif",
-            size: 222782,
-          },
-        },
-      },
-    ],
-  });
+    },
+  };
+};
+
+const StickerPack: Component<StickerPackProps> = ({
+  pack,
+}: StickerPackProps) => {
+  const [stickers, setStickers] = createSignal<ServerSticker[]>();
+  setStickers(pack.stickers);
 
   async function handleStickerTap({ target }: Event) {
     if (!(target instanceof HTMLImageElement)) return;
 
-    const url = "mxc://matrix.org/" + target.src.split("/")[8];
+    const path = new URL(target.src).pathname.split("/");
+    const mediaId = path[path.length - 1];
 
-    const sticker = stickers().stickers.find((s) => s.content.url === url);
+    const sticker = stickers()?.find((s) => s.mediaId === mediaId);
     if (!sticker) return;
-    await widgetApi.sendSticker(sticker);
+
+    await widgetApi.sendSticker(makeSticker(sticker));
   }
 
   return (
     <div>
-      <div>
-        <div class={styles.packTitle}>{stickers().name}</div>
-        <div class={styles.stickers}>
-          <For each={stickers().stickers}>
-            {(sticker) => {
-              const url =
-                "https://matrix.org/_matrix/media/r0/download/matrix.org/" +
-                sticker.content.url.split("/")[3];
+      <div class={styles.packTitle}>{pack.name}</div>
+      <div class={styles.stickers}>
+        <For each={stickers()}>
+          {(sticker) => {
+            const server = new URL(sticker.server);
+            const readServer = new URL(sticker.serverAddress);
+            const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
 
-              return (
-                <img
-                  src={`${url}`}
-                  onClick={handleStickerTap}
-                  class={styles.image}
-                />
-              );
-            }}
-          </For>
-        </div>
+            return (
+              // TODO: Make a custom element and pass sticker?
+              <img
+                src={`${srcUrl}`}
+                onClick={handleStickerTap}
+                class={styles.image}
+                alt={sticker.description}
+              />
+            );
+          }}
+        </For>
       </div>
     </div>
   );
-  // return (
-  //   <div class={styles.stickers}>
-  //     <div class="body">
-  //
-  //       <For each={stickers()}>{(sticker: Sticker) =>
-  //         <img src={sticker.content.httpsUrl}>
-  //       }</For>
-  //
-  //     </div>
-  //   </div>
-  // );
+};
+
+const fetchPacks = async (userId: string): Promise<ServerStickerPack[]> => {
+  let res;
+  try {
+    res = await (
+      await fetch(
+        new URL(`/api/packs?userId=${userId}`, import.meta.env.BASE_URL)
+      )
+    ).json();
+  } catch (err) {
+    console.error(err);
+  }
+  if (res.error) {
+    console.error(res.error);
+  }
+  return res?.data || [];
+};
+
+const Stickers: Component = () => {
+  const [userId, setUserId] = createSignal(USERID);
+  const [noPacks, setNoPacks] = createSignal(false);
+  const [packs] = createResource(userId, fetchPacks);
+
+  createEffect(() => {
+    if (packs()?.length === 0) {
+      setUserId("@trending-packs:sleroq.link");
+      setNoPacks(true);
+    }
+  });
+
+  return (
+    <div>
+      <div>
+        <span>{packs.loading && "Loading..."}</span>
+        <Show when={noPacks()}>
+          <span>
+            Seems like, you don't have any packs. Add them using
+            <code style="background-color: lightgray">
+              <a href="https://matrix.to/#/@pik:virto.community">@pik:virto.community</a>
+            </code>
+            bot
+          </span>
+          <br />
+          <br />
+          <span>Trending stickers:</span>
+        </Show>
+        <For each={packs()}>{(pack) => <StickerPack pack={pack} />}</For>
+      </div>
+    </div>
+  );
 };
 export default Stickers;
