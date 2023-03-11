@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 
 import styles from "./App.module.css";
 import Stickers from "./stickers";
-import {createSignal, Match, Show, Switch} from "solid-js";
+import { createSignal, Show } from "solid-js";
 import widgetApi from "./connect-widget";
 
 const Loading: Component = () => {
@@ -23,7 +23,10 @@ const App: Component = () => {
   return (
     <div class={styles.App}>
       <Show when={connectionFailed()} keyed>
-        <span>Seems like widget is not connected to the client. Try restarting the widget.</span>
+        <span>
+          Seems like widget is not connected to the client. Try restarting the
+          widget.
+        </span>
       </Show>
       <Stickers />
     </div>
