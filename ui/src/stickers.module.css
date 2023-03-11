@@ -1,6 +1,19 @@
 .packTitle {
   border-radius: 10px 10px 0 0;
   background-color: #e4aadb;
+  display: flex;
+  justify-content: space-between;
+}
+
+.packTitle div {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.button {
+  padding: 0;
+  border: none;
+  background: none;
 }
 
 .sticker {
