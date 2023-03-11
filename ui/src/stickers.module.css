@@ -1,8 +1,12 @@
-.packTitle {}
+.packTitle {
+  border-radius: 10px 10px 0 0;
+  background-color: #e4aadb;
+}
 
 .stickers {
   display: flex;
   flex-wrap: wrap;
+  background-color: #eedfff;
 }
 
 .image {
