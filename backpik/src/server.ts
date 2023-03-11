@@ -21,9 +21,8 @@ app.get("/api/packs", async (req: APIRequest, res: Response) => {
   try {
     packs = await getPacks(userId);
   } catch (error) {
-    // TODO: 404
     if (error instanceof Error && error.message.includes("no such user")) {
-      res.json({ error: "No such user" });
+      res.status(404).json({ error: "No such user" });
       return;
     }
 
