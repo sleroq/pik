@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 
 import styles from "./stickers.module.css";
-import widgetApi, { USERID } from "./connect-widget";
+import widgetApi, {GROUP_PACKS, USERID} from "./connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
 import { useToken } from "./lib/token";
 import Cookie from "./lib/cookie";
@@ -78,7 +78,7 @@ const StickerPack: Component<StickerPackProps> = ({
     await widgetApi.sendSticker(makeSticker(sticker));
   }
 
-  if (Boolean(Cookie.get(`${pack.id}_folded`)))
+  if (Cookie.get(`${pack.id}_folded`) === 'true')
       setFolded(true)
 
   const toggleFold = () => {
@@ -90,6 +90,9 @@ const StickerPack: Component<StickerPackProps> = ({
     <div>
       <div class={styles.packTitle} onClick={toggleFold}>
         <div>{pack.name}</div>
+        <Show when={folded()} keyed>
+          <div>&ltfolded&gt</div>
+        </Show>
         <div onClick={[removePack, pack.id]}>X</div>
       </div>
       <Show when={!folded()} keyed>
@@ -119,7 +122,8 @@ const StickerPack: Component<StickerPackProps> = ({
   );
 };
 
-const fetchPacks = async (userId: string): Promise<ServerStickerPack[]> => {
+const fetchPacks = async (userId: string | undefined): Promise<ServerStickerPack[]> => {
+  if (!userId) return [];
   let res;
   try {
     res = await (
@@ -153,27 +157,38 @@ const sendRemovePack = async (
 
 const Stickers: Component = () => {
   const [userId, setUserId] = createSignal(USERID);
-  const [noPacks, setNoPacks] = createSignal(false);
-  const [packs, setPacks] = createResource(userId, fetchPacks);
+  const [noUserPacks, setNoUserPacks] = createSignal(false);
+  const [userPacks, setUserPacks] = createResource(userId, fetchPacks);
+  const [groupPacks] = createResource(GROUP_PACKS, fetchPacks);
   const token = useToken();
 
   createEffect(() => {
-    if (packs()?.length === 0) {
-      setUserId("@trending-packs:sleroq.link");
-      setNoPacks(true);
+    if (userPacks()?.length === 0) {
+      setUserId(env.TRENDING_USER);
+      setNoUserPacks(true);
     }
   });
 
   const removePack = async (id: string): Promise<void> => {
     await sendRemovePack(USERID, token, id);
-    setPacks.mutate(packs()?.filter((p) => p.id !== id));
+    setUserPacks.refetch();
   };
+
+  setInterval(() => { setUserPacks.refetch() }, 30000)
 
   return (
     <div>
       <div>
-        <span>{packs.loading && "Loading..."}</span>
-        <Show when={noPacks()} keyed>
+        <Show when={userPacks.loading && groupPacks.loading} keyed>
+          <span>Loading...</span>
+        </Show>
+        <Show when={groupPacks()?.length} keyed>
+          <span>This group packs:</span>
+          <For each={groupPacks()}>
+            {(pack) => <StickerPack pack={pack} removePack={removePack} />}
+          </For>
+        </Show>
+        <Show when={noUserPacks()} keyed>
           <span>
             Seems like, you don't have any packs. Add them using
             <code style="background-color: lightgray">
@@ -184,10 +199,14 @@ const Stickers: Component = () => {
             bot
           </span>
           <br />
+          <button onClick={setUserPacks.refetch}>refresh</button>
           <br />
           <span>Trending stickers:</span>
         </Show>
-        <For each={packs()}>
+        <Show when={!noUserPacks() && groupPacks()?.length} keyed>
+          <span>Your packs:</span>
+        </Show>
+        <For each={userPacks()}>
           {(pack) => <StickerPack pack={pack} removePack={removePack} />}
         </For>
       </div>
