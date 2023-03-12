@@ -3,6 +3,7 @@ import solidPlugin from "vite-plugin-solid";
 
 export default defineConfig(() => {
   const apiUrl = "https://pik.sleroq.link/";
+  const trendingUser = "@trending-packs:sleroq.link";
 
   return {
     plugins: [solidPlugin()],
@@ -16,6 +17,7 @@ export default defineConfig(() => {
     },
     define: {
       "env.API_URL": `"${apiUrl}"`,
+      "env.TRENDING_USER": `"${trendingUser}"`,
     },
   };
 });
