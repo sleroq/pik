@@ -1,7 +1,6 @@
 # Pik
 Sticker picker
-
-<img src="https://i.ibb.co/ZMMB7v3/pik-preview.png" alt="pik-preview">
+<img src="https://i.ibb.co/1XjSCyR/2023-03-12-22-49.png" alt="pik-preview">
 
 ## Features
 
