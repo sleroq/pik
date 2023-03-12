@@ -8,15 +8,10 @@ import {
 } from "solid-js";
 
 import styles from "./stickers.module.css";
-import widgetApi, {GROUP_PACKS, USERID} from "./connect-widget";
+import widgetApi, { GROUP_PACKS, USERID } from "./connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
 import { useToken } from "./lib/token";
 import Cookie from "./lib/cookie";
-
-interface StickerPack {
-  name: string;
-  stickers: IStickerActionRequestData[];
-}
 
 interface ServerSticker {
   packId: string;
@@ -78,13 +73,12 @@ const StickerPack: Component<StickerPackProps> = ({
     await widgetApi.sendSticker(makeSticker(sticker));
   }
 
-  if (Cookie.get(`${pack.id}_folded`) === 'true')
-      setFolded(true)
+  if (Cookie.get(`${pack.id}_folded`) === "true") setFolded(true);
 
   const toggleFold = () => {
-    setFolded(!folded())
-    Cookie.set(`${pack.id}_folded`, String(folded()))
-  }
+    setFolded(!folded());
+    Cookie.set(`${pack.id}_folded`, String(folded()));
+  };
 
   return (
     <div>
@@ -104,15 +98,15 @@ const StickerPack: Component<StickerPackProps> = ({
               const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
 
               return (
-                  // TODO: Make a custom element and pass sticker?
-                  <div class={styles.sticker}>
-                    <img
-                        src={srcUrl}
-                        onClick={handleStickerTap}
-                        class={styles.image}
-                        alt={sticker.description}
-                    />
-                  </div>
+                // TODO: Make a custom element and pass sticker?
+                <div class={styles.sticker}>
+                  <img
+                    src={srcUrl}
+                    onClick={handleStickerTap}
+                    class={styles.image}
+                    alt={sticker.description}
+                  />
+                </div>
               );
             }}
           </For>
@@ -122,7 +116,9 @@ const StickerPack: Component<StickerPackProps> = ({
   );
 };
 
-const fetchPacks = async (userId: string | undefined): Promise<ServerStickerPack[]> => {
+const fetchPacks = async (
+  userId: string | undefined
+): Promise<ServerStickerPack[]> => {
   if (!userId) return [];
   let res;
   try {
@@ -174,7 +170,9 @@ const Stickers: Component = () => {
     setUserPacks.refetch();
   };
 
-  setInterval(() => { setUserPacks.refetch() }, 30000)
+  setInterval(() => {
+    setUserPacks.refetch();
+  }, 30000);
 
   return (
     <div>

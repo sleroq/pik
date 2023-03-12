@@ -2,7 +2,6 @@ import { Component, createSignal, Show } from "solid-js";
 import styles from "./header.module.css";
 import { useToken } from "../lib/token";
 import { USERID } from "../connect-widget";
-import {root} from "solid-js/web/types/core";
 
 const getAuth = async (userId: string, token: string) => {
   const res = await (
@@ -31,7 +30,7 @@ const Header: Component = () => {
     setTimeout(() => checkAuth(USERID, token), 20000);
   };
 
-  void checkAuth(USERID, token)
+  void checkAuth(USERID, token);
 
   return (
     <div>

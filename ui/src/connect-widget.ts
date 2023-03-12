@@ -1,4 +1,7 @@
-import {IStickerActionRequestData, MatrixCapabilities, WidgetApi} from "matrix-widget-api";
+import {
+  MatrixCapabilities,
+  WidgetApi,
+} from "matrix-widget-api";
 
 function parseFragment() {
   const fragmentString = window.location.search || "?";
