@@ -26,7 +26,7 @@ interface WellKnown {
 }
 export async function getServerUrl(server: string): Promise<string> {
   const res = await got(
-    new URL("/.well-known/matrix/server", server )
+    new URL("/.well-known/matrix/server", server)
   ).json<WellKnown>();
   return `https://${res["m.server"].split(":")[0]}`;
 }

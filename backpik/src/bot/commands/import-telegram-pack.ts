@@ -72,15 +72,15 @@ export default async function importTelegramPack(
     return;
   }
 
-  if (queue.find(i => i.packName === packName)) {
+  if (queue.find((i) => i.packName === packName)) {
     await client.replyNotice(roomId, event, "Already queued");
-    return
+    return;
   }
 
   const botMsgId = await client.replyNotice(
-      roomId,
-      event,
-      "Added to the queue."
+    roomId,
+    event,
+    "Added to the queue."
   );
 
   queue.push({

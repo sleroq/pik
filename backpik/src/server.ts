@@ -25,9 +25,9 @@ app.get("/api/packs", async (req: PacksRequest, res: Response) => {
       return;
     }
 
-    console.error(error)
+    console.error(error);
     res.status(500).json({ error: "something went wrong" });
-    return
+    return;
   }
 
   return res.json({ data: packs });
@@ -42,8 +42,8 @@ async function getPacks(userId: string) {
 
 interface PackRequest extends Request {
   params: {
-    id?: string
-  }
+    id?: string;
+  };
 }
 
 app.get("/api/packs/:id", async (req: PackRequest, res: Response) => {
@@ -55,9 +55,9 @@ app.get("/api/packs/:id", async (req: PackRequest, res: Response) => {
   try {
     pack = await StickerPackModel.findOne({ id: packId });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ error: "something went wrong" });
-    return
+    return;
   }
 
   if (!pack) {

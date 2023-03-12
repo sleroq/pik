@@ -1,15 +1,10 @@
-import {
-  LogService,
-  MatrixClient,
-  RichReply,
-  UserID,
-} from "matrix-bot-sdk";
+import { LogService, MatrixClient, RichReply, UserID } from "matrix-bot-sdk";
 import { escape } from "html-escaper";
 import { runHelloCommand } from "./hello.js";
 import importTelegramPack from "./import-telegram-pack.js";
 import authWidget from "./auth-widget.js";
 import addPack from "./add-pack.js";
-import { MyMessageEvent} from "../lib.js";
+import { MyMessageEvent } from "../lib.js";
 
 export const COMMAND_PREFIX = "!pik";
 
