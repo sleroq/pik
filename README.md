@@ -1,5 +1,6 @@
 # Pik
-Sticker picker
+Sticker picker for [Element](https://element.io/)
+
 <img src="https://i.ibb.co/1XjSCyR/2023-03-12-22-49.png" alt="pik-preview">
 
 ## Features
