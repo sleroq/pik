@@ -33,7 +33,10 @@ const Header: Component = () => {
   void checkAuth(USERID, token);
 
   return (
-    <div>
+    <div class={styles.header}>
+      <Show when={USERID === '@unknown:sleroq.link' && window.self !== window.top } keyed>
+        userId is not set!
+      </Show>
       <Show when={showToken()} keyed>
         <span>
           Auth: <code onClick={() => copyText(msg)}>{msg}</code>

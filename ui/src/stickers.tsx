@@ -128,7 +128,7 @@ const fetchPacks = async (
   } catch (err) {
     console.error(err);
   }
-  if (res.error) {
+  if (res?.error) {
     console.error(res.error);
   }
   return res?.data || [];
@@ -188,13 +188,13 @@ const Stickers: Component = () => {
         </Show>
         <Show when={noUserPacks()} keyed>
           <span>
-            Seems like, you don't have any packs. Add them using
+            Seems like, you don't have any packs. Add them using&nbsp
             <code style="background-color: lightgray">
               <a href="https://matrix.to/#/@pik:virto.community">
                 @pik:virto.community
               </a>
             </code>
-            bot
+            &nbspbot
           </span>
           <br />
           <button onClick={setUserPacks.refetch}>refresh</button>

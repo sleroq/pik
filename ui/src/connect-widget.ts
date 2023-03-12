@@ -5,22 +5,18 @@ function parseFragment() {
   return new URLSearchParams(fragmentString.substring(1));
 }
 
-function assertParam(fragment: URLSearchParams, name: string) {
-  const val = fragment.get(name);
-  if (!val)
-    throw new Error(`${name} is not present in URL - cannot load widget`);
-  return val;
-}
-
 const qs = parseFragment();
-let widgetId = assertParam(qs, "widgetId");
-export const USERID = assertParam(qs, "userId");
+let widgetId = qs.get("widgetId");
+export const USERID = qs.get("userId") || '@unknown:sleroq.link'
 export const GROUP_PACKS = qs.get("groupPacks");
 // TODO: Handle default themes
 
-const widgetApi = new WidgetApi(widgetId);
-widgetApi.requestCapability(MatrixCapabilities.StickerSending);
-widgetApi.start();
+let widgetApi = new WidgetApi()
+if (widgetId) {
+  widgetApi = new WidgetApi(widgetId);
+  widgetApi.requestCapability(MatrixCapabilities.StickerSending);
+  widgetApi.start();
+}
 
 export default widgetApi;
 
