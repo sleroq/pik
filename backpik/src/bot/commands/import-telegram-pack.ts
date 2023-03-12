@@ -5,7 +5,11 @@ import {
   StickerModel,
   StickerPackModel,
 } from "../../db/sticker-pack.model.js";
-import { MatrixClient } from "matrix-bot-sdk";
+import {
+  MatrixClient,
+  MessageEventContent,
+  MessageEvent,
+} from "matrix-bot-sdk";
 import { User } from "../../db/user.model.js";
 import editMessage from "../../lib/matrix.js";
 import {
@@ -15,6 +19,15 @@ import {
   TelegramSticker,
 } from "../../lib/telegram.js";
 import Werror from "../../lib/error.js";
+import { writeMetadata } from "../../lib/metadata.js";
+
+const APP_URL_ENV = process.env["APP_URL"];
+if (!APP_URL_ENV) {
+  throw new Error("API_URL is not specified");
+}
+
+// Check if url is valid
+export const APP_URL = new URL(APP_URL_ENV).toString();
 
 interface QueueItem {
   roomId: string;
@@ -29,18 +42,18 @@ let processing = false;
 
 export default async function importTelegramPack(
   roomId: string,
-  userId: string,
-  event: string,
-  body: string
+  event: MessageEvent<MessageEventContent>,
+  args: string[],
+  client: MatrixClient
 ) {
   let user;
   try {
-    user = await saveOrFindUser(userId, client);
+    user = await saveOrFindUser(event.sender, client);
   } catch (error) {
     throw new Werror(error, "getting/saving user");
   }
 
-  const packName = body.match(/t\.me\/addstickers\/(.+)($|\s)/m)?.[1];
+  const packName = args[1]?.match(/t\.me\/addstickers\/(.+)($|\s)/m)?.[1];
   if (!packName) {
     await client.replyNotice(roomId, event, "Pack not found in url");
     return;
@@ -59,16 +72,21 @@ export default async function importTelegramPack(
     return;
   }
 
+  if (queue.find(i => i.packName === packName)) {
+    await client.replyNotice(roomId, event, "Already queued");
+    return
+  }
+
   const botMsgId = await client.replyNotice(
-    roomId,
-    event,
-    "Added to the queue."
+      roomId,
+      event,
+      "Added to the queue."
   );
 
   queue.push({
     roomId,
-    userId,
-    body,
+    userId: event.sender,
+    body: event.content.body,
     packName,
     botMsgId,
   });
@@ -84,7 +102,7 @@ async function processQueue(
   client: MatrixClient
 ) {
   processing = true;
-  const req = queue.pop();
+  const req = queue[queue.length - 1];
   if (!req) return;
 
   try {
@@ -99,6 +117,8 @@ async function processQueue(
       "Something went wrong :("
     );
   }
+
+  queue.pop();
 
   try {
     await processQueue(queue, user, client);
@@ -179,7 +199,7 @@ async function addTelegramPack(user: User, packName: string) {
   for (const s of pack.stickers) {
     let sticker;
     try {
-      sticker = await addTGSticker(s, stickerPack.id);
+      sticker = await addTGSticker(s, stickerPack.id, client);
     } catch (error) {
       throw new Error("could not add TG Sticker");
     }
@@ -195,10 +215,15 @@ async function addTelegramPack(user: User, packName: string) {
 
 async function addTGSticker(
   sticker: TelegramSticker,
-  packId: string
+  packId: string,
+  client: MatrixClient
 ): Promise<Sticker> {
   const fileInfo = await getFileInfo(sticker.file_id);
-  const file = await downloadFile(sticker.file_id, fileInfo.file_path);
+  let file = await downloadFile(sticker.file_id, fileInfo.file_path);
+  const sourceUrl = new URL(`/api/packs/${packId}`, APP_URL).toString();
+
+  // Add pack info to sticker
+  file = writeMetadata(file, { sourceUrl });
 
   // TODO: Convert everything to everything, handle animations
   const mxcUrl = await client.uploadContent(file, "image/webp", "sticker.webp");

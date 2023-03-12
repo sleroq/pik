@@ -1,14 +1,18 @@
 import saveOrFindUser from "../../db/save-or-find-user.js";
-import client from "../bot.js";
 import Werror from "../../lib/error.js";
+import {
+  MatrixClient,
+  MessageEvent,
+  MessageEventContent,
+} from "matrix-bot-sdk";
 
 export default async function authWidget(
   roomId: string,
-  userId: string,
-  event: string,
-  body: string
+  event: MessageEvent<MessageEventContent>,
+  args: string[],
+  client: MatrixClient
 ) {
-  const token = body.split(" ")[2];
+  const token = args[1];
   if (!token) {
     await client.replyNotice(roomId, event, "You have to specify token");
     return;
@@ -16,7 +20,7 @@ export default async function authWidget(
 
   let user;
   try {
-    user = await saveOrFindUser(userId, client);
+    user = await saveOrFindUser(event.sender, client);
   } catch (error) {
     throw new Werror(error, "getting/saving user");
   }
