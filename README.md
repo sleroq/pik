@@ -9,6 +9,7 @@ Sticker picker
 - Importing packs from telegram
 - Removing packs from UI
 - Adding packs from sent sticker
+- Group sticker packs
 - Federative API (possible to add sticker pack from another instance)
 
 ## Usage
