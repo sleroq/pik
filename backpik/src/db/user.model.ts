@@ -1,10 +1,15 @@
 import { Document, model, Schema } from "mongoose";
 
+export interface Token {
+  token: string;
+  date: Date;
+}
+
 interface IUser {
   id: string;
   name: string;
   packs: string[];
-  tokens: { token: string; date: Date }[];
+  tokens: Token[];
 }
 
 export const userSchema = new Schema<IUser>({

@@ -2,13 +2,15 @@ import type { Component } from "solid-js";
 
 import styles from "./App.module.css";
 import Stickers from "./stickers";
-import { createSignal, Show } from "solid-js";
-import widgetApi from "./connect-widget";
+import { createResource, createSignal, Show } from "solid-js";
+import widgetApi from "./lib/connect-widget";
 import Header from "./header/header";
+import createToken from "./lib/auth";
 
 const App: Component = () => {
   const [connectionFailed, setFailed] = createSignal<boolean>(false);
   const connectTimout = setTimeout(() => setFailed(true), 2000);
+  const [authData] = createResource(createToken);
 
   // We can't rely on this event to show stickers only when widget is connected
   // Because at the moment, it does not work properly on android
@@ -17,16 +19,26 @@ const App: Component = () => {
     clearTimeout(connectTimout);
   });
 
+  const getAuthData = () => {
+    const data = authData();
+
+    if (!data) throw new Error("auth data not prepared");
+
+    return data;
+  };
+
   return (
     <div class={styles.App}>
-      <Header />
-      <Show when={connectionFailed()} keyed>
-        <span>
-          Seems like widget is not connected to the client. Try restarting the
-          widget.
-        </span>
+      <Show when={authData()} keyed>
+        <Header authData={getAuthData()} />
+        <Show when={connectionFailed()} keyed>
+          <span>
+            Seems like widget is not connected to the client. Try restarting the
+            widget.
+          </span>
+        </Show>
+        <Stickers authData={getAuthData()} />
       </Show>
-      <Stickers />
     </div>
   );
 };

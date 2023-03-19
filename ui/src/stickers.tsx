@@ -8,27 +8,11 @@ import {
 } from "solid-js";
 
 import styles from "./stickers.module.css";
-import widgetApi, { GROUP_PACKS, USERID } from "./connect-widget";
+import widgetApi, { GROUP_PACKS, USERID } from "./lib/connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
-import { useToken } from "./lib/token";
 import Cookie from "./lib/cookie";
-
-interface ServerSticker {
-  packId: string;
-  mediaId: string;
-  server: string;
-  serverAddress: string;
-  description: string;
-  width: number;
-  height: number;
-}
-
-interface ServerStickerPack {
-  id: string;
-  source: string;
-  name: string;
-  stickers: ServerSticker[];
-}
+import PikApi, { ServerSticker, ServerStickerPack } from "./lib/pik-api";
+import { AuthData } from "./lib/auth";
 
 interface StickerPackProps {
   pack: ServerStickerPack;
@@ -116,57 +100,30 @@ const StickerPack: Component<StickerPackProps> = ({
   );
 };
 
-const fetchPacks = async (
-  userId: string | undefined
-): Promise<ServerStickerPack[]> => {
-  if (!userId) return [];
-  let res;
-  try {
-    res = await (
-      await fetch(new URL(`/api/packs?userId=${userId}`, env.API_URL))
-    ).json();
-  } catch (err) {
-    console.error(err);
-  }
-  if (res?.error) {
-    console.error(res.error);
-  }
-  return res?.data || [];
-};
+const Stickers: Component<{ authData: AuthData }> = (props: {
+  authData: AuthData;
+}) => {
+  const { authData } = props;
 
-const sendRemovePack = async (
-  userId: string,
-  token: string,
-  packId: string
-): Promise<Response> =>
-  await fetch(new URL(`/api/removePack`, env.API_URL), {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      packId: packId,
-      userId: userId,
-    }),
-  });
-
-const Stickers: Component = () => {
   const [userId, setUserId] = createSignal(USERID);
+  const pik = new PikApi(import.meta.env.VITE_API_URL, authData.apiToken);
+
   const [noUserPacks, setNoUserPacks] = createSignal(false);
-  const [userPacks, setUserPacks] = createResource(userId, fetchPacks);
-  const [groupPacks] = createResource(GROUP_PACKS, fetchPacks);
-  const token = useToken();
+  const [userPacks, setUserPacks] = createResource(
+    userId,
+    pik.userPacks.bind(pik)
+  );
+  const [groupPacks] = createResource(GROUP_PACKS, pik.userPacks.bind(pik));
 
   createEffect(() => {
     if (userPacks()?.length === 0) {
-      setUserId(env.TRENDING_USER);
+      setUserId(import.meta.env.VITE_TRENDING_USER);
       setNoUserPacks(true);
     }
   });
 
   const removePack = async (id: string): Promise<void> => {
-    await sendRemovePack(USERID, token, id);
+    await pik.removePack(USERID, id);
     setUserPacks.refetch();
   };
 

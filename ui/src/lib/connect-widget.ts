@@ -7,11 +7,11 @@ function parseFragment() {
 
 const qs = parseFragment();
 let widgetId = qs.get("widgetId");
-export const USERID = qs.get("userId") || '@unknown:sleroq.link'
+export const USERID = qs.get("userId") || "@unknown:sleroq.link";
 export const GROUP_PACKS = qs.get("groupPacks");
 // TODO: Handle default themes
 
-let widgetApi = new WidgetApi()
+let widgetApi = new WidgetApi();
 if (widgetId) {
   widgetApi = new WidgetApi(widgetId);
   widgetApi.requestCapability(MatrixCapabilities.StickerSending);

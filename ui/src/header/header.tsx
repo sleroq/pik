@@ -1,40 +1,37 @@
 import { Component, createSignal, Show } from "solid-js";
 import styles from "./header.module.css";
-import { useToken } from "../lib/token";
-import { USERID } from "../connect-widget";
+import { AuthData } from "../lib/auth";
+import { USERID } from "../lib/connect-widget";
+import PikApi from "../lib/pik-api";
 
-const getAuth = async (userId: string, token: string) => {
-  const res = await (
-    await fetch(
-      new URL(`/api/auth?userId=${userId}&token=${token}`, env.API_URL)
-    )
-  ).json();
-
-  return res?.data?.auth === true;
-};
-
-const Header: Component = () => {
+const Header: Component<{ authData: AuthData }> = (props: {
+  authData: AuthData;
+}) => {
+  const { authData } = props;
   const [showToken, setShowToken] = createSignal<boolean>(true);
   const [popup, setPopup] = createSignal<boolean>(false);
-  const token = useToken();
-  const msg = `!pik auth ${token}`;
+  const pik = new PikApi(import.meta.env.VITE_API_URL, authData.apiToken);
+  const msg = `!pik auth ${authData.token}`;
 
-  const checkAuth = async (userId: string, token: string) => {
-    if (await getAuth(userId, token)) setShowToken(false);
+  const checkAuth = async () => {
+    if (await pik.checkAuth(USERID)) setShowToken(false);
   };
 
   const copyText = async (text: string) => {
     await navigator.clipboard.writeText(text);
     setPopup(true);
     setTimeout(() => setPopup(false), 1000);
-    setTimeout(() => checkAuth(USERID, token), 20000);
+    setTimeout(() => checkAuth(), 20000);
   };
 
-  void checkAuth(USERID, token);
+  void checkAuth();
 
   return (
     <div class={styles.header}>
-      <Show when={USERID === '@unknown:sleroq.link' && window.self !== window.top } keyed>
+      <Show
+        when={USERID === "@unknown:sleroq.link" && window.self !== window.top}
+        keyed
+      >
         userId is not set!
       </Show>
       <Show when={showToken()} keyed>

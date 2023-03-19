@@ -1,5 +1,15 @@
+## Usage
+
 ```bash
-$ npm install # or pnpm install or yarn install
+$ yarn
+```
+
+```bash
+$ cp .env.example .env
+```
+
+```bash
+$ yarn preview
 ```
 
 ## Development
