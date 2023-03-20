@@ -7,8 +7,8 @@ export interface ServerSticker {
   description: string;
   width: number;
   height: number;
-  isVideo: boolean
-  size: number
+  isVideo: boolean;
+  size: number;
 }
 
 export interface ServerStickerPack {

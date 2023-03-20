@@ -9,8 +9,8 @@ interface ISticker {
   description: string;
   width: number;
   height: number;
-  isVideo: boolean
-  size: number
+  isVideo: boolean;
+  size: number;
 }
 const stickerSchema = new Schema<ISticker>({
   packId: { type: String, required: true },
@@ -22,7 +22,7 @@ const stickerSchema = new Schema<ISticker>({
   width: { type: Number, required: true },
   height: { type: Number, required: true },
   isVideo: { type: Boolean, required: true },
-  size: { type: Number, required: true }
+  size: { type: Number, required: true },
 });
 export type Sticker = ISticker & Document<any, any, ISticker>;
 export const StickerModel = model<ISticker>("Sticker", stickerSchema);

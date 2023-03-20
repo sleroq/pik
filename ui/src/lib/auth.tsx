@@ -13,12 +13,12 @@ export interface AuthData {
   apiToken: string;
 }
 export default async function createToken(): Promise<AuthData> {
-  const password = Cookie.get('password') || genString();
-  const secret = Cookie.get('secret') || genString();
+  const password = Cookie.get("password") || genString();
+  const secret = Cookie.get("secret") || genString();
   const token = await getToken(secret, password);
 
-  Cookie.set('password', password)
-  Cookie.set('token', token)
+  Cookie.set("password", password);
+  Cookie.set("token", token);
   return {
     token: token,
     apiToken: secret + "." + password,

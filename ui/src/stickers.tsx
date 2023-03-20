@@ -46,7 +46,12 @@ const StickerPack: Component<StickerPackProps> = ({
   setStickers(pack.stickers);
 
   async function handleStickerTap({ target }: Event) {
-    if (!(target instanceof HTMLImageElement || target instanceof HTMLVideoElement)) return;
+    if (
+      !(
+        target instanceof HTMLImageElement || target instanceof HTMLVideoElement
+      )
+    )
+      return;
 
     const path = new URL(target.src).pathname.split("/");
     const mediaId = path[path.length - 1];
@@ -84,15 +89,15 @@ const StickerPack: Component<StickerPackProps> = ({
               // TODO: Make a custom element and pass sticker?
               if (sticker.isVideo) {
                 return (
-                    <picture class={styles.sticker}>
-                      <video
-                          autoplay={true}
-                          loop={true}
-                          src={srcUrl}
-                          onClick={handleStickerTap}
-                          class={styles.image}
-                      />
-                    </picture>
+                  <picture class={styles.sticker}>
+                    <video
+                      autoplay={true}
+                      loop={true}
+                      src={srcUrl}
+                      onClick={handleStickerTap}
+                      class={styles.image}
+                    />
+                  </picture>
                 );
               } else {
                 return (

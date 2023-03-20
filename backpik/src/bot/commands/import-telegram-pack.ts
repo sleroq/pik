@@ -230,7 +230,6 @@ async function addTGSticker(
 
   const mxcUrl = await client.uploadContent(file, contentType, "sticker.webp");
 
-
   const matrixSticker = new StickerModel({
     packId,
     mediaId: mxcUrl.split("/")[3],
