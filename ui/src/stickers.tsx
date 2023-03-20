@@ -23,15 +23,15 @@ const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
   const server = new URL(s.server);
 
   return {
-    name: s.description, // TODO: Add actual names?
+    name: s.name,
     description: s.description,
     content: {
       url: `mxc://${server.host}/${s.mediaId}`,
       info: {
         h: s.height,
         w: s.width,
-        mimetype: "image/webp", // TODO: Save format
-        size: 164934,
+        mimetype: s.isVideo ? "video/webp" : "image/webp",
+        size: s.size,
       },
     },
   };
@@ -46,7 +46,7 @@ const StickerPack: Component<StickerPackProps> = ({
   setStickers(pack.stickers);
 
   async function handleStickerTap({ target }: Event) {
-    if (!(target instanceof HTMLImageElement)) return;
+    if (!(target instanceof HTMLImageElement || target instanceof HTMLVideoElement)) return;
 
     const path = new URL(target.src).pathname.split("/");
     const mediaId = path[path.length - 1];
@@ -81,17 +81,33 @@ const StickerPack: Component<StickerPackProps> = ({
               const readServer = new URL(sticker.serverAddress);
               const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
 
-              return (
-                // TODO: Make a custom element and pass sticker?
-                <div class={styles.sticker}>
-                  <img
-                    src={srcUrl}
-                    onClick={handleStickerTap}
-                    class={styles.image}
-                    alt={sticker.description}
-                  />
-                </div>
-              );
+              // TODO: Make a custom element and pass sticker?
+              if (sticker.isVideo) {
+                return (
+                    <picture class={styles.sticker}>
+                      <video
+                          autoplay={true}
+                          loop={true}
+                          src={srcUrl}
+                          onClick={handleStickerTap}
+                          class={styles.image}
+                      />
+                    </picture>
+                );
+              } else {
+                return (
+                  <div class={styles.sticker}>
+                    <img
+                      src={srcUrl}
+                      loading="lazy"
+                      decoding="async"
+                      onClick={handleStickerTap}
+                      class={styles.image}
+                      alt={sticker.description}
+                    />
+                  </div>
+                );
+              }
             }}
           </For>
         </div>

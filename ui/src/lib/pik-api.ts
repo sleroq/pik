@@ -3,9 +3,12 @@ export interface ServerSticker {
   mediaId: string;
   server: string;
   serverAddress: string;
+  name: string;
   description: string;
   width: number;
   height: number;
+  isVideo: boolean
+  size: number
 }
 
 export interface ServerStickerPack {

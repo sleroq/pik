@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 interface PacksRequest extends Request {
   query: { userId?: string };
 }
-
+// TODO: JSONApi
 app.get("/api/packs", async (req: PacksRequest, res: Response) => {
   const userId: string | undefined = req.query.userId;
 

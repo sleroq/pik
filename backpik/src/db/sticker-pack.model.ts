@@ -5,18 +5,24 @@ interface ISticker {
   mediaId: string;
   server: string;
   serverAddress: string;
+  name: string;
   description: string;
   width: number;
   height: number;
+  isVideo: boolean
+  size: number
 }
 const stickerSchema = new Schema<ISticker>({
   packId: { type: String, required: true },
   mediaId: { type: String, required: true },
   server: { type: String, required: true },
   serverAddress: { type: String, required: true },
+  name: { type: String, required: true },
   description: { type: String, required: true },
   width: { type: Number, required: true },
   height: { type: Number, required: true },
+  isVideo: { type: Boolean, required: true },
+  size: { type: Number, required: true }
 });
 export type Sticker = ISticker & Document<any, any, ISticker>;
 export const StickerModel = model<ISticker>("Sticker", stickerSchema);

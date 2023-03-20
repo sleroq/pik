@@ -155,7 +155,7 @@ async function processItem(
           client,
           req.roomId,
           req.botMsgId,
-          "Video packs will be supported soon!"
+          "Animated packs will be supported soon!"
         );
         return;
       } else {
@@ -190,7 +190,7 @@ async function addTelegramPack(user: User, packName: string) {
 
   const pack = await getPackInfo(packName);
 
-  if (pack.is_video || pack.is_animated) {
+  if (pack.is_animated) {
     throw new Error("Not supported");
   }
 
@@ -226,16 +226,22 @@ async function addTGSticker(
   file = writeMetadata(file, { sourceUrl });
 
   // TODO: Convert everything to everything, handle animations
-  const mxcUrl = await client.uploadContent(file, "image/webp", "sticker.webp");
+  let contentType = sticker.is_video ? "video/webp" : "image/webp";
+
+  const mxcUrl = await client.uploadContent(file, contentType, "sticker.webp");
+
 
   const matrixSticker = new StickerModel({
     packId,
     mediaId: mxcUrl.split("/")[3],
+    name: sticker.emoji,
     description: sticker.emoji,
     server: homeserverUrl,
     serverAddress: client.homeserverUrl, // TODO: what if it changes?
     width: sticker.width,
     height: sticker.height,
+    isVideo: sticker.is_video,
+    size: sticker.file_size,
   });
 
   await matrixSticker.save();
