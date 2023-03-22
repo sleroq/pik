@@ -9,10 +9,13 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Api format
+// { error: "message" } || { data: any }
+
 interface PacksRequest extends Request {
   query: { userId?: string };
 }
-// TODO: JSONApi
+
 app.get("/api/packs", async (req: PacksRequest, res: Response) => {
   const userId: string | undefined = req.query.userId;
 
