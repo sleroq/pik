@@ -5,11 +5,12 @@ Sticker picker for [Element](https://element.io/)
 
 ## Features
 
-- Folding packs
 - Importing packs from telegram
 - Removing packs from UI
-- Adding packs from sent sticker
+- Adding stickers pack from received sticker
+- Folding packs
 - Group sticker packs
+- Video-stickers are supported ([issue](https://github.com/vector-im/element-web/issues/24873￥))
 - Federative API (possible to add sticker pack from another instance)
 
 ## Usage
