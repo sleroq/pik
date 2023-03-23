@@ -69,11 +69,11 @@ export default class CommandHandler {
         default: {
           const help =
             "" +
-            "!bot hello [user]     - Say hello to a user.\n" +
-            "!bot import [url]     - Import sticker pack from telegram.\n" +
-            "!bot add [url]        - Add sticker pack from reply or link to image.\n" +
-            "!bot auth [token]     - Auth in widget ui.\n" +
-            "!bot help             - This menu\n";
+            "!pik hello [user]     - Say hello to a user.\n" +
+            "!pik import [url]     - Import sticker pack from telegram.\n" +
+            "!pik add              - Add sticker pack from reply.\n" +
+            "!pik auth [token]     - Auth in widget ui.\n" +
+            "!pik help             - This menu\n";
 
           const text = `Help menu:\n${help}`;
           const html = `<b>Help menu:</b><br /><pre><code>${escape(
