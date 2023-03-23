@@ -103,7 +103,10 @@ async function processQueue(
 ) {
   processing = true;
   const req = queue[queue.length - 1];
-  if (!req) return;
+  if (!req) {
+    processing = false;
+    return;
+  }
 
   try {
     console.log(`processing ${req.packName}`);
