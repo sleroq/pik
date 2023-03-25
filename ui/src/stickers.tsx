@@ -153,7 +153,6 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
   }, 30000);
 
   return (
-    <div>
       <div>
         <Show when={userPacks.loading && groupPacks.loading} keyed>
           <span>Loading...</span>
@@ -185,7 +184,6 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
         <For each={userPacks()}>
           {(pack) => <StickerPack pack={pack} removePack={removePack} />}
         </For>
-      </div>
     </div>
   );
 };
