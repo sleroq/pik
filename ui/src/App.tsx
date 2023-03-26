@@ -6,6 +6,7 @@ import { createResource, createSignal, Show } from "solid-js";
 import widgetApi from "./lib/connect-widget";
 import Header from "./header/header";
 import createToken from "./lib/auth";
+import { PacksProvider } from "./packs-provider";
 
 const App: Component = () => {
   const [connectionFailed, setFailed] = createSignal<boolean>(false);
@@ -21,9 +22,7 @@ const App: Component = () => {
 
   const getAuthData = () => {
     const data = authData();
-
     if (!data) throw new Error("auth data not prepared");
-
     return data;
   };
 
@@ -37,7 +36,9 @@ const App: Component = () => {
             widget.
           </span>
         </Show>
-        <Stickers authData={getAuthData()} />
+        <PacksProvider authData={getAuthData()}>
+          <Stickers authData={getAuthData()} />
+        </PacksProvider>
       </Show>
     </div>
   );

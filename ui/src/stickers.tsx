@@ -1,23 +1,13 @@
 import type { Component } from "solid-js";
-import {
-  createEffect,
-  createResource,
-  createSignal,
-  For,
-  Show,
-} from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 
 import styles from "./stickers.module.css";
-import widgetApi, { GROUP_PACKS, USERID } from "./lib/connect-widget";
+import widgetApi, { USERID } from "./lib/connect-widget";
 import { IStickerActionRequestData } from "matrix-widget-api";
 import Cookie from "./lib/cookie";
 import PikApi, { ServerSticker, ServerStickerPack } from "./lib/pik-api";
 import { AuthData } from "./lib/auth";
-
-interface StickerPackProps {
-  pack: ServerStickerPack;
-  removePack: (id: string) => Promise<void>;
-}
+import { usePacks } from "./packs-provider";
 
 const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
   const server = new URL(s.server);
@@ -36,6 +26,11 @@ const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
     },
   };
 };
+
+interface StickerPackProps {
+  pack: ServerStickerPack;
+  removePack?: (id: string) => Promise<void>;
+}
 
 const StickerPack: Component<StickerPackProps> = ({
   pack,
@@ -69,6 +64,12 @@ const StickerPack: Component<StickerPackProps> = ({
     Cookie.set(`${pack.id}_folded`, String(folded()));
   };
 
+  const getRemoveFunction = () => {
+    if (!removePack)
+      throw new Error("getting remove function in different context");
+    return removePack;
+  };
+
   return (
     <div>
       <div class={styles.packTitle} onClick={toggleFold}>
@@ -76,7 +77,9 @@ const StickerPack: Component<StickerPackProps> = ({
         <Show when={folded()} keyed>
           <div>&ltfolded&gt</div>
         </Show>
-        <div onClick={[removePack, pack.id]}>X</div>
+        <Show when={removePack} fallback={<div></div>} keyed>
+          <div onClick={[getRemoveFunction(), pack.id]}>X</div>
+        </Show>
       </div>
       <Show when={!folded()} keyed>
         <div class={styles.stickers}>
@@ -126,21 +129,17 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
 }) => {
   const { authData } = props;
 
-  const [userId, setUserId] = createSignal(USERID);
   const pik = new PikApi(import.meta.env.VITE_API_URL, authData.apiToken);
 
+  const { userPacksRes, groupPacksRes, trendingPacksRes } = usePacks();
+  const [userPacks, setUserPacks] = userPacksRes,
+    [groupPacks] = groupPacksRes,
+    [trendingPacks] = trendingPacksRes;
+
   const [noUserPacks, setNoUserPacks] = createSignal(false);
-  const [userPacks, setUserPacks] = createResource(
-    userId,
-    pik.userPacks.bind(pik)
-  );
-  const [groupPacks] = createResource(GROUP_PACKS, pik.userPacks.bind(pik));
 
   createEffect(() => {
-    if (userPacks()?.length === 0) {
-      setUserId(import.meta.env.VITE_TRENDING_USER);
-      setNoUserPacks(true);
-    }
+    if (!userPacks()?.length) setNoUserPacks(true);
   });
 
   const removePack = async (id: string): Promise<void> => {
@@ -153,37 +152,40 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
   }, 30000);
 
   return (
-      <div>
-        <Show when={userPacks.loading && groupPacks.loading} keyed>
-          <span>Loading...</span>
-        </Show>
+    <div>
+      <Show when={userPacks.loading && groupPacks.loading} keyed>
+        <span>Loading...</span>
+      </Show>
+      <Show when={groupPacks()?.length} keyed>
+        <span>This group packs:</span>
+        <For each={groupPacks()}>{(pack) => <StickerPack pack={pack} />}</For>
+      </Show>
+      <Show when={noUserPacks()} keyed>
+        <span>
+          Seems like, you don't have any packs. Add them using&nbsp
+          <code style="background-color: lightgray">
+            <a href="https://matrix.to/#/@pik:virto.community">
+              @pik:virto.community
+            </a>
+          </code>
+          &nbspbot
+        </span>
+        <br />
+        <button onClick={setUserPacks.refetch}>refresh</button>
+        <br />
+        <span>Trending stickers:</span>
+        <For each={trendingPacks()}>
+          {(pack) => <StickerPack pack={pack} />}
+        </For>
+      </Show>
+      <Show when={userPacks()?.length} keyed>
         <Show when={groupPacks()?.length} keyed>
-          <span>This group packs:</span>
-          <For each={groupPacks()}>
-            {(pack) => <StickerPack pack={pack} removePack={removePack} />}
-          </For>
-        </Show>
-        <Show when={noUserPacks()} keyed>
-          <span>
-            Seems like, you don't have any packs. Add them using&nbsp
-            <code style="background-color: lightgray">
-              <a href="https://matrix.to/#/@pik:virto.community">
-                @pik:virto.community
-              </a>
-            </code>
-            &nbspbot
-          </span>
-          <br />
-          <button onClick={setUserPacks.refetch}>refresh</button>
-          <br />
-          <span>Trending stickers:</span>
-        </Show>
-        <Show when={!noUserPacks() && groupPacks()?.length} keyed>
           <span>Your packs:</span>
         </Show>
         <For each={userPacks()}>
           {(pack) => <StickerPack pack={pack} removePack={removePack} />}
         </For>
+      </Show>
     </div>
   );
 };
