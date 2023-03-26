@@ -1,3 +1,5 @@
+import { IStickerActionRequestData } from "matrix-widget-api";
+
 export interface ServerSticker {
   packId: string;
   mediaId: string;
@@ -18,6 +20,23 @@ export interface ServerStickerPack {
   stickers: ServerSticker[];
 }
 
+export const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
+  const server = new URL(s.server);
+
+  return {
+    name: s.name,
+    description: s.description,
+    content: {
+      url: `mxc://${server.host}/${s.mediaId}`,
+      info: {
+        h: s.height,
+        w: s.width,
+        mimetype: s.isVideo ? "video/webp" : "image/webp",
+        size: s.size,
+      },
+    },
+  };
+};
 export default class PikApi {
   private readonly token: string; // Secret + "." + Password
   apiOrigin: string; // Secret + "." + Password

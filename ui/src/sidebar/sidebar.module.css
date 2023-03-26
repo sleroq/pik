@@ -1,0 +1,12 @@
+.sidebar {
+  width: 3%;
+  margin-left: 1%;
+  position: fixed;
+  top: 40px;
+  right: 0;
+}
+
+.packImage {
+  width: 40px;
+  height: 40px;
+}

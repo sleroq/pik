@@ -7,6 +7,7 @@ import widgetApi from "./lib/connect-widget";
 import Header from "./header/header";
 import createToken from "./lib/auth";
 import { PacksProvider } from "./packs-provider";
+import Sidebar from "./sidebar/sidebar";
 
 const App: Component = () => {
   const [connectionFailed, setFailed] = createSignal<boolean>(false);
@@ -37,7 +38,10 @@ const App: Component = () => {
           </span>
         </Show>
         <PacksProvider authData={getAuthData()}>
-          <Stickers authData={getAuthData()} />
+          <div class={styles.stickersContainer}>
+            <Stickers authData={getAuthData()} />
+            <Sidebar />
+          </div>
         </PacksProvider>
       </Show>
     </div>

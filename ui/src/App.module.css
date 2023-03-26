@@ -16,3 +16,8 @@
 .link {
   color: #b318f0;
 }
+
+.stickersContainer {
+  display: flex;
+  flex-direction: row;
+}

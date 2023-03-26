@@ -5,9 +5,10 @@
   justify-content: space-between;
 }
 
-.packTitle div {
+.packTitle div,
+h4 {
   margin-left: 30px;
-  height: 50px;
+  height: available;
   margin-right: 30px;
   display: flex;
   align-items: center;
@@ -38,7 +39,6 @@
   justify-content: space-evenly;
 }
 
-.image {
-  height: 100px;
-  width: 100px;
+.packsContainer {
+  width: 96%;
 }

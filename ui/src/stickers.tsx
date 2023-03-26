@@ -3,29 +3,15 @@ import { createEffect, createSignal, For, Show } from "solid-js";
 
 import styles from "./stickers.module.css";
 import widgetApi, { USERID } from "./lib/connect-widget";
-import { IStickerActionRequestData } from "matrix-widget-api";
 import Cookie from "./lib/cookie";
-import PikApi, { ServerSticker, ServerStickerPack } from "./lib/pik-api";
+import PikApi, {
+  makeSticker,
+  ServerSticker,
+  ServerStickerPack,
+} from "./lib/pik-api";
 import { AuthData } from "./lib/auth";
 import { usePacks } from "./packs-provider";
-
-const makeSticker = (s: ServerSticker): IStickerActionRequestData => {
-  const server = new URL(s.server);
-
-  return {
-    name: s.name,
-    description: s.description,
-    content: {
-      url: `mxc://${server.host}/${s.mediaId}`,
-      info: {
-        h: s.height,
-        w: s.width,
-        mimetype: s.isVideo ? "video/webp" : "image/webp",
-        size: s.size,
-      },
-    },
-  };
-};
+import Sticker from "./sticker";
 
 interface StickerPackProps {
   pack: ServerStickerPack;
@@ -73,7 +59,7 @@ const StickerPack: Component<StickerPackProps> = ({
   return (
     <div>
       <div class={styles.packTitle} onClick={toggleFold}>
-        <div>{pack.name}</div>
+        <h4 id={pack.id.toLowerCase()}>{pack.name}</h4>
         <Show when={folded()} keyed>
           <div>&ltfolded&gt</div>
         </Show>
@@ -84,39 +70,13 @@ const StickerPack: Component<StickerPackProps> = ({
       <Show when={!folded()} keyed>
         <div class={styles.stickers}>
           <For each={stickers()}>
-            {(sticker) => {
-              const server = new URL(sticker.server);
-              const readServer = new URL(sticker.serverAddress);
-              const srcUrl = `${readServer.origin}/_matrix/media/r0/download/${server.host}/${sticker.mediaId}`;
-
-              // TODO: Make a custom element and pass sticker?
-              if (sticker.isVideo) {
-                return (
-                  <picture class={styles.sticker}>
-                    <video
-                      autoplay={true}
-                      loop={true}
-                      src={srcUrl}
-                      onClick={handleStickerTap}
-                      class={styles.image}
-                    />
-                  </picture>
-                );
-              } else {
-                return (
-                  <div class={styles.sticker}>
-                    <img
-                      src={srcUrl}
-                      loading="lazy"
-                      decoding="async"
-                      onClick={handleStickerTap}
-                      class={styles.image}
-                      alt={sticker.description}
-                    />
-                  </div>
-                );
-              }
-            }}
+            {(sticker) => (
+              <Sticker
+                sticker={sticker}
+                css={styles.sticker}
+                onClick={handleStickerTap}
+              />
+            )}
           </For>
         </div>
       </Show>
@@ -139,7 +99,7 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
   const [noUserPacks, setNoUserPacks] = createSignal(false);
 
   createEffect(() => {
-    if (!userPacks()?.length) setNoUserPacks(true);
+    if (userPacks()?.length === 0) setNoUserPacks(true);
   });
 
   const removePack = async (id: string): Promise<void> => {
@@ -152,7 +112,7 @@ const Stickers: Component<{ authData: AuthData }> = (props: {
   }, 30000);
 
   return (
-    <div>
+    <div class={styles.packsContainer}>
       <Show when={userPacks.loading && groupPacks.loading} keyed>
         <span>Loading...</span>
       </Show>
