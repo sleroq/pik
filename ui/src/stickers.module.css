@@ -1,23 +1,29 @@
+.packsContainer {
+  padding-right: 80px;
+  width: 100%;
+}
+
 .packTitle {
+  padding-right: 20px;
+  padding-left: 20px;
   border-radius: 30px 30px 0 0;
   background-color: #e4aadb;
   display: flex;
   justify-content: space-between;
+  height: 50px;
 }
 
-.packTitle div,
-h4 {
-  margin-left: 30px;
-  height: available;
-  margin-right: 30px;
+.packTitle div, h4 {
   display: flex;
   align-items: center;
+  margin: 0;
 }
 
-.button {
-  padding: 0;
-  border: none;
-  background: none;
+@media screen and (max-width: 240px){
+  .packTitle h4 {
+    max-width: 30%;
+    overflow: hidden;
+  }
 }
 
 .sticker {
@@ -27,7 +33,7 @@ h4 {
   margin: 5px;
 }
 
-.sticker img {
+.sticker video, img {
   width: 120px;
   height: 120px;
   object-fit: contain;
@@ -37,8 +43,4 @@ h4 {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-}
-
-.packsContainer {
-  width: 90%;
 }

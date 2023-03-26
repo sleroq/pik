@@ -10,7 +10,7 @@ interface PackItemProps {
 
 const PackItem: Component<PackItemProps> = ({ pack }: PackItemProps) => {
   return (
-    <a href={"#" + pack.id.toLowerCase()}>
+    <a href={"#" + pack.id.toLowerCase()} style={styles.packImageContainer}>
       <Sticker sticker={pack.stickers[0]} css={styles.packImage} />
     </a>
   );
