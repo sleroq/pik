@@ -18,7 +18,7 @@ export default async function createToken(): Promise<AuthData> {
   const token = await getToken(secret, password);
 
   Cookie.set("password", password);
-  Cookie.set("token", token);
+  Cookie.set("secret", secret);
   return {
     token: token,
     apiToken: secret + "." + password,
